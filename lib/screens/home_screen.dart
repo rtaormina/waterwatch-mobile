@@ -4,6 +4,7 @@ import 'package:waterwatch/screens/home_widgets/location_selector.dart';
 import 'package:waterwatch/screens/home_widgets/metrics/temperature_input.dart';
 import 'package:waterwatch/screens/home_widgets/metrics_selector.dart';
 import 'package:waterwatch/screens/home_widgets/submit_button.dart';
+import 'package:waterwatch/theme.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,8 +18,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
-          backgroundColor: Colors.blue,
+          //backround collor defined by hex
+          backgroundColor: mainColor,
           title: const Text(
             'WATERWATCH',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
