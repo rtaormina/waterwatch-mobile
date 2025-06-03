@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:waterwatch/screens/home_screen.dart';
+import 'package:waterwatch/util/measurement_state.dart';
 
 void main() async {
   runApp(
@@ -24,10 +25,10 @@ void main() async {
           // Optionally specify a custom brightness (dark/light)
           brightness: Brightness.light,
         ).copyWith(
-          secondary: Color(0xFFD7E9F4), // ← this is your “accent” color
+          secondary: const Color(0xFFD7E9F4), // ← this is your “accent” color
         ),
       ),
-      home: const HomeScreen(),
+      home: HomeScreen(measurementState: MeasurementState.initializeState(),),
     ),
   );
 }
