@@ -15,7 +15,7 @@ class _TemperatureInputState extends State<TemperatureInput> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Text(
+            const Text(
               "Temperature",
               style: TextStyle(
                 fontSize: 20,
@@ -23,14 +23,14 @@ class _TemperatureInputState extends State<TemperatureInput> {
               ),
             ),
             const SizedBox(height: 10),
-            TextField(
+            const TextField(
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: "Sensor Type",
               ),
               keyboardType: TextInputType.text,
             ),
-            const SizedBox(height: 1000),
+            const SizedBox(height: 10),
             Row(
               children: [
                 const Expanded(
@@ -43,9 +43,9 @@ class _TemperatureInputState extends State<TemperatureInput> {
                   ),
                 ),
                 const SizedBox(width: 10),
-                ElevatedButton(onPressed: () {}, child: Text("°C")),
+                ElevatedButton(onPressed: () {}, child: const Text("°C")),
                 const SizedBox(width: 10),
-                ElevatedButton(onPressed: () {}, child: Text("°F")),
+                ElevatedButton(onPressed: () {}, child: const Text("°F")),
               ],
             ),
           ],

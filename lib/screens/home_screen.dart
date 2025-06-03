@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:waterwatch/screens/home_widgets/clear_button.dart';
 import 'package:waterwatch/screens/home_widgets/location_selector.dart';
 import 'package:waterwatch/screens/home_widgets/metrics/temperature_input.dart';
 import 'package:waterwatch/screens/home_widgets/metrics_selector.dart';
+import 'package:waterwatch/screens/home_widgets/submit_button.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -27,7 +29,11 @@ class _HomeScreenState extends State<HomeScreen> {
             children: const [
               LocationSelector(),
               MetricsSelector(),
-              TemperatureInput()
+              TemperatureInput(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [ClearButton(), SubmitButton()],
+              )
             ],
           ),
         ),
