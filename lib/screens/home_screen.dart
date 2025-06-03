@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:waterwatch/screens/home_widgets/location_selector.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,20 +15,9 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('Water Watch'),
       ),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Welcome to Water Watch!',
-              style: TextStyle(fontSize: 24),
-            ),
-            SizedBox(height: 20),
-            Text(
-              'Monitor your water usage effectively.',
-              style: TextStyle(fontSize: 16),
-            ),
-          ],
+      body: Center(
+        child: ListView(
+          children: const [LocationSelector()],
         ),
       ),
     );
