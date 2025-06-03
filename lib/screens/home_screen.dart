@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:waterwatch/screens/home_widgets/location_selector.dart';
+import 'package:waterwatch/screens/home_widgets/metrics/temperature_input.dart';
+import 'package:waterwatch/screens/home_widgets/metrics_selector.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,13 +13,23 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Water Watch'),
-      ),
-      body: Center(
-        child: ListView(
-          children: const [LocationSelector()],
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.blue,
+          title: const Text(
+            'WATERWATCH',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+          ),
+        ),
+        body: Center(
+          child: ListView(
+            children: const [
+              LocationSelector(),
+              MetricsSelector(),
+              TemperatureInput()
+            ],
+          ),
         ),
       ),
     );
