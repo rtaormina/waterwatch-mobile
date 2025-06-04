@@ -116,16 +116,20 @@ class _LocationSelectorState extends State<LocationSelector> {
             width: double.infinity,
             child: Stack(
               children: [
-                // 2) The actual map only gets inserted once _currentLocation is non-null
-                //    and there was no error. Until then, we leave this layer “off.”
-                if (_currentLocation != null && _locationError == null)
+                // If still loading (no location & no error), show a spinner.
+                if (_currentLocation == null && _locationError == null)
+                  const Center(child: CircularProgressIndicator()),
+
+                // Otherwise (either we have a location _or_ an error occurred),
+                // display the map. If _currentLocation is null (error case),
+                // it will default to _initialCenter.
+                if (!(_currentLocation == null && _locationError == null))
                   FlutterMap(
                     options: MapOptions(
                       minZoom: 2,
                       maxZoom: 18,
                       initialCenter: _currentLocation ?? _initialCenter,
                       initialZoom: _currentZoom,
-                      // Only allow drag & pinchZoom; rotation is off by default.
                       interactionOptions: const InteractionOptions(
                           flags:
                               InteractiveFlag.pinchZoom | InteractiveFlag.drag),
@@ -159,57 +163,50 @@ class _LocationSelectorState extends State<LocationSelector> {
                         ),
                     ],
                   ),
-
-                // 3) While loading (no location & no error), show a spinner:
-                Visibility(
-                  visible: _currentLocation == null && _locationError == null,
-                  maintainSize: true,
-                  maintainAnimation: true,
-                  maintainState: true,
-                  child: const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                ),
-
-                // 4) If there was an error, show it (in red) on top of the blank map‐placeholder:
-                Visibility(
-                  visible: _locationError != null,
-                  maintainSize: true,
-                  maintainAnimation: true,
-                  maintainState: true,
-                  child: Center(
-                    child: Text(
-                      _locationError ?? 'Unknown error',
-                      style: const TextStyle(
-                        color: Colors.red,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
 
-          // 5) Display the selected coordinates (or a placeholder message)
-          if (_selectedPoint != null)
-            Text(
-              'Selected: '
-              'Lat ${_selectedPoint!.latitude.toStringAsFixed(5)}, '
-              'Lng ${_selectedPoint!.longitude.toStringAsFixed(5)}',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-            )
-          else
-            const Text(
-              'Tap on the map to pick a point',
-              style: TextStyle(fontSize: 16, color: Colors.grey),
+          // 2) Show the error message (if any) underneath the map panel:
+          if (_locationError != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                _locationError!,
+                style: const TextStyle(
+                  color: Colors.red,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.center,
+              ),
             ),
 
-          const SizedBox(height: 24),
+          // 3) Always allow the user to see/choose the “Selected” coordinates below:
+          const SizedBox(height: 12),
+          if (_selectedPoint != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                'Selected: '
+                'Lat ${_selectedPoint!.latitude.toStringAsFixed(5)}, '
+                'Lng ${_selectedPoint!.longitude.toStringAsFixed(5)}',
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
+            )
+          else
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                'Tap on the map to pick a point',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+            ),
+
+          const SizedBox(height: 16),
         ],
       ),
     );
