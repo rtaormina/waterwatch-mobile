@@ -21,7 +21,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final bool keyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
-
+    widget.measurementState.reloadHomePage = () {
+      setState(() {});
+    };
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -48,9 +50,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   MetricsSelector(
                     measurementState: widget.measurementState,
                   ),
-                  TemperatureInput(
-                    measurementState: widget.measurementState,
-                  ),
+                  widget.measurementState.metricTemperature
+                      ? TemperatureInput(
+                          measurementState: widget.measurementState,
+                        )
+                      : const SizedBox(),
                   const SizedBox(height: 200),
                 ],
               ),

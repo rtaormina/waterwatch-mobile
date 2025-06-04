@@ -8,5 +8,5 @@ class MeasurementState {
 
   String waterSource = 'River';
 
-  void Function() reloadMetricTemperature = () {};
+  void Function() reloadHomePage = () {};
 }

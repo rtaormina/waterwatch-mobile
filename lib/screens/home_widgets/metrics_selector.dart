@@ -26,7 +26,7 @@ class _MetricsSelectorState extends State<MetricsSelector> {
                 onChanged: (val) {
                   setState(() {
                     state.metricTemperature = !state.metricTemperature;
-                    state.reloadMetricTemperature();
+                    state.reloadHomePage();
                   });
                 }),
             const Text("Temperature", style: TextStyle(fontSize: 16)),
