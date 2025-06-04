@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:waterwatch/components/card_component.dart';
-import 'package:waterwatch/components/duration_picker.dart';
 import 'package:waterwatch/theme.dart';
 import 'package:waterwatch/util/measurement_state.dart';
 import 'package:duration_picker/duration_picker.dart';
@@ -16,6 +15,7 @@ class TemperatureInput extends StatefulWidget {
 
 class _TemperatureInputState extends State<TemperatureInput> {
   Duration _dur = const Duration(minutes: 0, seconds: 0);
+
   @override
   Widget build(BuildContext context) {
     MeasurementState state = widget.measurementState;
@@ -108,9 +108,16 @@ class _TemperatureInputState extends State<TemperatureInput> {
                     const SizedBox(height: 10),
                     ElevatedButton(
                       child: Text(
-                          'Duration: ${_dur.inMinutes.remainder(60).toString().padLeft(2, '0')}:${_dur.inSeconds.remainder(60).toString().padLeft(2, '0')}'),
+                        'Duration: ${_dur.inMinutes.remainder(60).toString().padLeft(2, '0')} minutes ${_dur.inSeconds.remainder(60).toString().padLeft(2, '0')} seconds',
+                        style: const TextStyle(fontSize: 18),
+                      ),
                       onPressed: () async {
                         final result = await showDurationPicker(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          baseUnit: BaseUnit.second,
                           context: context,
                           initialTime: _dur,
                         );
@@ -119,7 +126,7 @@ class _TemperatureInputState extends State<TemperatureInput> {
                         }
                       },
                     ),
-                    MinuteSecondPicker(onDurationChanged: (d) {})
+                    //MinuteSecondPicker(onDurationChanged: (d) {})
                   ],
                 ))
             : const SizedBox();

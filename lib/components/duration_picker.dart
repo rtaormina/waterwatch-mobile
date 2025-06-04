@@ -6,11 +6,11 @@ class MinuteSecondPicker extends StatefulWidget {
   final ValueChanged<Duration> onDurationChanged;
 
   const MinuteSecondPicker({
-    Key? key,
+    super.key,
     this.initialMinutes = 0,
     this.initialSeconds = 0,
     required this.onDurationChanged,
-  }) : super(key: key);
+  });
 
   @override
   State<MinuteSecondPicker> createState() => _MinuteSecondPickerState();

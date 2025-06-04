@@ -51,13 +51,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   TemperatureInput(
                     measurementState: widget.measurementState,
                   ),
-                  SizedBox(height: 200),
+                  const SizedBox(height: 200),
                 ],
               ),
             ),
             keyboardOpen
-                ? SizedBox()
-                : Row(
+                ? const SizedBox()
+                : const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [ClearButton(), SubmitButton()],
                   )
