@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:waterwatch/components/card_component.dart';
+import 'package:waterwatch/components/duration_picker.dart';
 import 'package:waterwatch/theme.dart';
 import 'package:waterwatch/util/measurement_state.dart';
+import 'package:duration_picker/duration_picker.dart';
 
 class TemperatureInput extends StatefulWidget {
   const TemperatureInput({super.key, required this.measurementState});
@@ -13,6 +15,7 @@ class TemperatureInput extends StatefulWidget {
 }
 
 class _TemperatureInputState extends State<TemperatureInput> {
+  Duration _dur = const Duration(minutes: 0, seconds: 0);
   @override
   Widget build(BuildContext context) {
     MeasurementState state = widget.measurementState;
@@ -53,30 +56,70 @@ class _TemperatureInputState extends State<TemperatureInput> {
                         // Button for Celsius
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: mainColor,
+                              backgroundColor: state.tempUnitCelsius
+                                  ? mainColor
+                                  : Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
+                                  horizontal: 20, vertical: 12),
                             ),
-                            onPressed: () {},
-                            child: const Text(
+                            onPressed: () {
+                              setState(() {
+                                state.tempUnitCelsius = true;
+                              });
+                            },
+                            child: Text(
                               "°C",
-                              style:
-                                  TextStyle(fontSize: 20, color: Colors.white),
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: state.tempUnitCelsius
+                                      ? Colors.white
+                                      : mainColor),
                             )),
                         const SizedBox(width: 10),
                         // Button for Fahrenheit
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
+                            backgroundColor: state.tempUnitCelsius
+                                ? Colors.white
+                                : mainColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 10),
+                                horizontal: 20, vertical: 12),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            setState(() {
+                              state.tempUnitCelsius = false;
+                            });
+                          },
                           child: Text("°F",
-                              style: TextStyle(fontSize: 20, color: mainColor)),
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: state.tempUnitCelsius
+                                      ? mainColor
+                                      : Colors.white)),
                         )
                       ],
                     ),
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      child: Text(
+                          'Duration: ${_dur.inMinutes.remainder(60).toString().padLeft(2, '0')}:${_dur.inSeconds.remainder(60).toString().padLeft(2, '0')}'),
+                      onPressed: () async {
+                        final result = await showDurationPicker(
+                          context: context,
+                          initialTime: _dur,
+                        );
+                        if (result != null) {
+                          setState(() => _dur = result);
+                        }
+                      },
+                    ),
+                    MinuteSecondPicker(onDurationChanged: (d) {})
                   ],
                 ))
             : const SizedBox();

@@ -34,6 +34,5 @@ class CardComponent extends StatelessWidget {
             ),
           )),
     );
-    ;
   }
 }

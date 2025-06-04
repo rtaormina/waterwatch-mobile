@@ -4,6 +4,7 @@ import 'package:waterwatch/screens/home_widgets/location_selector.dart';
 import 'package:waterwatch/screens/home_widgets/metrics/temperature_input.dart';
 import 'package:waterwatch/screens/home_widgets/metrics_selector.dart';
 import 'package:waterwatch/screens/home_widgets/buttons/submit_button.dart';
+import 'package:waterwatch/screens/home_widgets/source_selector.dart';
 import 'package:waterwatch/theme.dart';
 import 'package:waterwatch/util/measurement_state.dart';
 
@@ -19,6 +20,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    final bool keyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -32,18 +35,33 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Colors.white, fontWeight: FontWeight.w500, fontSize: 30),
           ),
         ),
-        body: Center(
-          child: ListView(
-            children: [
-              const LocationSelector(),
-              MetricsSelector(measurementState: widget.measurementState,),
-              TemperatureInput(measurementState: widget.measurementState,),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [ClearButton(), SubmitButton()],
-              )
-            ],
-          ),
+        body: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Expanded(
+              child: ListView(
+                children: [
+                  const LocationSelector(),
+                  SourceSelector(
+                    measurementState: widget.measurementState,
+                  ),
+                  MetricsSelector(
+                    measurementState: widget.measurementState,
+                  ),
+                  TemperatureInput(
+                    measurementState: widget.measurementState,
+                  ),
+                  SizedBox(height: 200),
+                ],
+              ),
+            ),
+            keyboardOpen
+                ? SizedBox()
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [ClearButton(), SubmitButton()],
+                  )
+          ],
         ),
       ),
     );

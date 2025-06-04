@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:waterwatch/components/card_component.dart';
-import 'package:waterwatch/theme.dart';
 
 class LocationSelector extends StatefulWidget {
   const LocationSelector({super.key});
@@ -12,6 +11,6 @@ class LocationSelector extends StatefulWidget {
 class _LocationSelectorState extends State<LocationSelector> {
   @override
   Widget build(BuildContext context) {
-    return const CardComponent(title: "map", child: SizedBox());
+    return const CardComponent(title: "Map", child: SizedBox());
   }
 }
