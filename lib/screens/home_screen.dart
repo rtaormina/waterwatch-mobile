@@ -55,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           measurementState: widget.measurementState,
                         )
                       : const SizedBox(),
-                  const SizedBox(height: 200),
+                  const SizedBox(height: 10),
                 ],
               ),
             ),

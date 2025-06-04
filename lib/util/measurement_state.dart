@@ -5,6 +5,7 @@ class MeasurementState {
 
   bool metricTemperature = true;
   bool tempUnitCelsius = true;
+  
 
   String waterSource = 'River';
 
