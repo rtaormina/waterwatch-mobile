@@ -27,6 +27,8 @@ build_mobile_image:
 lint_app:
   stage: lint
   image: $CI_REGISTRY_IMAGE:mobile
+  variables:
+    PUB_CACHE: /deps/.pub-cache
   rules:
     - changes:
         - lib/**/*
@@ -37,11 +39,13 @@ lint_app:
 unit_and_widget_tests:
   stage: test
   image: $CI_REGISTRY_IMAGE:mobile
+  variables:
+    PUB_CACHE: /deps/.pub-cache
   rules:
     - changes:
         - lib/**/*
   script:
-    - ./coverage-test.sh
+    - ./coverage-tests.sh
   coverage: '/s*lines.*:s*([d.]+%)/'
   artifacts:
     paths:

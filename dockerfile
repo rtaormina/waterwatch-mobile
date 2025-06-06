@@ -5,7 +5,7 @@ ENV PUB_CACHE=/deps/.pub_cache
 
 # Get dependencies and install them
 WORKDIR /deps
-COPY pubspec.yaml ./
+COPY pubspec.yaml pubspec.lock ./
 RUN flutter pub get
 
 WORKDIR /app
