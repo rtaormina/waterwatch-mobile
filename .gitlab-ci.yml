@@ -46,4 +46,4 @@ unit_and_widget_tests:
   artifacts:
     paths:
       - coverage
-    expire_in: 3 days  
+    expire_in: 3 days
