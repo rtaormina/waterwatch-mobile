@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:waterwatch/screens/home_screen.dart';
-import 'package:waterwatch/screens/home_widgets/buttons/clear_button.dart';
-import 'package:waterwatch/screens/home_widgets/buttons/submit_button.dart';
 import 'package:waterwatch/screens/home_widgets/location_selector.dart';
 import 'package:waterwatch/screens/home_widgets/metrics/temperature_input.dart';
 import 'package:waterwatch/screens/home_widgets/metrics_selector.dart';
