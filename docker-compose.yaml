@@ -1,0 +1,12 @@
+services:
+  app:
+    container_name: mobile-app
+    build:
+      context: .
+      dockerfile: dockerfile
+    restart: always
+    command: tail -f /dev/null
+    volumes:
+      - .:/app
+    environment:
+      - PUB_CACHE=/deps/.pub_cache
