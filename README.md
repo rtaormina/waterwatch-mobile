@@ -2,7 +2,7 @@
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 
 #  WATERWATCH Mobile
-This is the mobile application devepoled from the WATERWATCH website.
+This is the mobile application developed from the WATERWATCH website.
 ## Live Website
 The live production version of [WATERWATCH](https://waterwatch.tudelft.nl)
 
@@ -50,7 +50,7 @@ You can view the results by opening `coverage/index.html`. This can be done by r
 ## Support
 
 ## Contributing
-Running `flutter pub get` should install all the necessary dependencies needed to start coding in the project. To start committing code, you also need to install `pre-commit`, instructions on this can be found in the section called `Pre-commit`.
+Running `flutter pub get` should install all the necessary dependencies needed to start coding in the project. To start committing code, you also need to install `pre-commit`, instructions on this can be found in the section called [Pre-commit](#Pre-Commit).
 
 ### Documentation Guidelines
 
