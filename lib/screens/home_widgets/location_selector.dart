@@ -3,6 +3,7 @@ import 'package:waterwatch/components/card_component.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:waterwatch/theme.dart';
 
 /// Returns the current [Position], after ensuring the user has granted
 /// location permission. Throws a [PermissionDeniedException] if permission
@@ -106,7 +107,7 @@ class _LocationSelectorState extends State<LocationSelector> {
   @override
   Widget build(BuildContext context) {
     return CardComponent(
-      title: "Map",
+      title: "Measurement",
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -175,8 +176,8 @@ class _LocationSelectorState extends State<LocationSelector> {
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Text(
                 _locationError!,
-                style: const TextStyle(
-                  color: Colors.red,
+                style: TextStyle(
+                  color: mainColor,
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                 ),
