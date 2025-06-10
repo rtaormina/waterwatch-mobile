@@ -72,7 +72,9 @@ class MeasurementState {
       print(jsonDecode(response.body));
       return jsonDecode(response.body) as Map<String, dynamic>;
     } else {
-      // Handle error
+      // Handle error https://stackoverflow.com/questions/22812721/why-do-i-get-csrf-cookie-not-set-when-post-to-django-rest-framework
+      //AssertionError: The `request` argument must be an instance of `django.http.HttpRequest`, not `rest_framework.request.Request`.
+      //backend     | [10/Jun/2025 16:59:14] "POST /api/measurements/ HTTP/1.0" 500 120500 
       throw http.ClientException(
         'Failed POST (${response.statusCode}): ${response.body}',
         uri,
@@ -90,6 +92,8 @@ class MeasurementState {
     // Extract the CSRF token (example from a cookie)
     String? csrfToken;
     var setCookie = response.headers['set-cookie'];
+    print(response.headers);
+    print(response.body);
     if (setCookie != null) {
       var cookies = setCookie.split(';');
       for (var cookie in cookies) {
