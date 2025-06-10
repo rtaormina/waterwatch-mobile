@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:waterwatch/theme.dart';
+import 'package:waterwatch/util/measurement_state.dart';
 
 class SubmitButton extends StatelessWidget {
-  const SubmitButton({super.key});
-
+  const SubmitButton({super.key, required this.measurementState});
+  final MeasurementState measurementState;
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -19,7 +20,11 @@ class SubmitButton extends StatelessWidget {
                 borderRadius: BorderRadius.circular(4),
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              print("Submit button pressed");
+              measurementState.validateMetrics();
+              measurementState.reloadHomePage();
+            },
             child: const Text(
               "Submit",
               style: TextStyle(color: Colors.white, fontSize: 20),

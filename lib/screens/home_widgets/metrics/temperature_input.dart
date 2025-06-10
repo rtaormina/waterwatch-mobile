@@ -24,34 +24,44 @@ class _TemperatureInputState extends State<TemperatureInput> {
       title: "Temperature",
       child: Column(
         children: [
-          const TextField(
+          TextField(
             decoration: InputDecoration(
               fillColor: Colors.white,
               filled: true,
-              border: OutlineInputBorder(),
+              border: OutlineInputBorder(borderSide: BorderSide(color: state.metricTemperatureObject.sensorTypeError ? Colors.red : Colors.black)),
               labelText: "Sensor Type",
             ),
+            onChanged: (value) {
+              state.metricTemperatureObject.sensorType = value;
+            },
             keyboardType: TextInputType.text,
           ),
           const SizedBox(height: 10),
           Row(
             children: [
-              const Expanded(
+              Expanded(
                 child: TextField(
                   decoration: InputDecoration(
                     fillColor: Colors.white,
                     filled: true,
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: state.metricTemperatureObject.temperatureError
+                                ? Colors.red
+                                : Colors.black)),
                     labelText: "Enter temperature",
                   ),
                   keyboardType: TextInputType.number,
+                  onChanged: (val) {
+                    state.metricTemperatureObject.temperature = double.tryParse(val) ?? 0.0;
+                  },
                 ),
               ),
               const SizedBox(width: 10),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor:
-                      state.tempUnitCelsius ? mainColor : Colors.white,
+                      state.metricTemperatureObject.tempUnitCelsius ? mainColor : Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(4),
                   ),
@@ -60,14 +70,14 @@ class _TemperatureInputState extends State<TemperatureInput> {
                 ),
                 onPressed: () {
                   setState(() {
-                    state.tempUnitCelsius = true;
+                    state.metricTemperatureObject.tempUnitCelsius = true;
                   });
                 },
                 child: Text(
                   "°C",
                   style: TextStyle(
                     fontSize: 20,
-                    color: state.tempUnitCelsius ? Colors.white : mainColor,
+                    color: state.metricTemperatureObject.tempUnitCelsius ? Colors.white : mainColor,
                   ),
                 ),
               ),
@@ -75,7 +85,7 @@ class _TemperatureInputState extends State<TemperatureInput> {
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor:
-                      state.tempUnitCelsius ? Colors.white : mainColor,
+                      state.metricTemperatureObject.tempUnitCelsius ? Colors.white : mainColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(4),
                   ),
@@ -84,14 +94,14 @@ class _TemperatureInputState extends State<TemperatureInput> {
                 ),
                 onPressed: () {
                   setState(() {
-                    state.tempUnitCelsius = false;
+                    state.metricTemperatureObject.tempUnitCelsius = false;
                   });
                 },
                 child: Text(
                   "°F",
                   style: TextStyle(
                     fontSize: 20,
-                    color: state.tempUnitCelsius ? mainColor : Colors.white,
+                    color: state.metricTemperatureObject.tempUnitCelsius ? mainColor : Colors.white,
                   ),
                 ),
               )

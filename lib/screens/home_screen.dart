@@ -22,7 +22,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final bool keyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
     widget.measurementState.reloadHomePage = () {
+      print("Reloading Home Page");
       setState(() {});
+      print(widget.measurementState.metricTemperatureObject.sensorTypeError);
     };
     return SafeArea(
       child: Scaffold(
@@ -61,9 +63,12 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             keyboardOpen
                 ? const SizedBox()
-                : const Row(
+                : Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [ClearButton(), SubmitButton()],
+                    children: [
+                      ClearButton(),
+                      SubmitButton(measurementState: widget.measurementState)
+                    ],
                   )
           ],
         ),
