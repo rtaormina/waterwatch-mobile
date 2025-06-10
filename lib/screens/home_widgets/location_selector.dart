@@ -154,10 +154,10 @@ class _LocationSelectorState extends State<LocationSelector> {
                               width: 40,
                               height: 40,
                               point: _selectedPoint!,
-                              child: const Icon(
+                              child: Icon(
                                 Icons.location_on,
                                 size: 40,
-                                color: Colors.red,
+                                color: mainColor,
                               ),
                             ),
                           ],
@@ -176,8 +176,8 @@ class _LocationSelectorState extends State<LocationSelector> {
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Text(
                 _locationError!,
-                style: TextStyle(
-                  color: mainColor,
+                style: const TextStyle(
+                  color: Colors.red,
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                 ),
