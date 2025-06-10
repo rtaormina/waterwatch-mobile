@@ -64,10 +64,10 @@ class _LocationSelectorState extends State<LocationSelector> {
   String? _locationError;
 
   // Center of the map when first shown (fallback).
-  final LatLng _initialCenter = LatLng(51.5, -0.09);
+  final LatLng _initialCenter = const LatLng(51.5, -0.09);
 
   // Current zoom level
-  double _currentZoom = 13;
+  final double _currentZoom = 13;
 
   // The selected point (if any)
   LatLng? _selectedPoint;

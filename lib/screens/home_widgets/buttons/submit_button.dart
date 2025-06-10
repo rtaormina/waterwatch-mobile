@@ -21,7 +21,6 @@ class SubmitButton extends StatelessWidget {
               ),
             ),
             onPressed: () {
-              print("Submit button pressed");
               measurementState.validateMetrics();
               measurementState.reloadHomePage();
             },

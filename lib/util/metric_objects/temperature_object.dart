@@ -18,9 +18,9 @@ class TemperatureObject extends MetricObject {
   }
 
   void sensorTypeValid() {
-    print("sensor error");
+    
     sensorTypeError = sensorType.isEmpty;
-    print(sensorTypeError);
+
   }
 
   void temperatureValid() {
