@@ -1,0 +1,55 @@
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: always
+
+stages:
+  - build_test_env
+  - lint
+  - test
+
+build_mobile_image:
+  stage: build_test_env
+  image: docker:latest
+  services:
+    - docker:dind
+  # Only if requirements files changed
+  rules:
+    - changes:
+        - pubspec.yaml
+        - dockerfile
+  # Log in to Docker registry and build the image
+  script:
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+    - docker build -f dockerfile -t $CI_REGISTRY_IMAGE:mobile .
+    - docker push $CI_REGISTRY_IMAGE:mobile
+
+lint_app:
+  stage: lint
+  image: $CI_REGISTRY_IMAGE:mobile
+  variables:
+    PUB_CACHE: /deps/.pub-cache
+  rules:
+    - changes:
+        - lib/**/*
+  script:
+    - flutter analyze lib
+
+# Decided to keep them together for now to get full coverage
+unit_and_widget_tests:
+  stage: test
+  image: $CI_REGISTRY_IMAGE:mobile
+  variables:
+    PUB_CACHE: /deps/.pub-cache
+  rules:
+    - changes:
+        - lib/**/*
+  script:
+    - flutter test --coverage
+    - lcov --remove coverage/lcov.info "*.g.dart" "*.part.dart" "*/generated/*" -o coverage/lcov.info
+    - genhtml -o coverage coverage/lcov.info
+  coverage: '/lines\.*: \d+\.\d+\%/'
+  artifacts:
+    paths:
+      - coverage
+    expire_in: 3 days
