@@ -14,7 +14,6 @@ class TemperatureInput extends StatefulWidget {
 }
 
 class _TemperatureInputState extends State<TemperatureInput> {
-  Duration _dur = const Duration(minutes: 0, seconds: 0);
 
   @override
   Widget build(BuildContext context) {
@@ -25,11 +24,20 @@ class _TemperatureInputState extends State<TemperatureInput> {
       child: Column(
         children: [
           TextField(
+            controller: widget
+                .measurementState.metricTemperatureObject.sensorController,
             decoration: InputDecoration(
               fillColor: Colors.white,
               filled: true,
-              border: OutlineInputBorder(borderSide: BorderSide(color: state.metricTemperatureObject.sensorTypeError ? Colors.red : Colors.black)),
+              border: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: state.metricTemperatureObject.sensorTypeError
+                          ? Colors.red
+                          : Colors.black)),
               labelText: "Sensor Type",
+              errorText: state.metricTemperatureObject.sensorTypeError
+                  ? 'Please enter a sensor type'
+                  : null,
             ),
             onChanged: (value) {
               state.metricTemperatureObject.sensorType = value;
@@ -41,27 +49,35 @@ class _TemperatureInputState extends State<TemperatureInput> {
             children: [
               Expanded(
                 child: TextField(
+                  controller: widget.measurementState.metricTemperatureObject
+                      .temperatureController,
                   decoration: InputDecoration(
                     fillColor: Colors.white,
                     filled: true,
                     border: OutlineInputBorder(
                         borderSide: BorderSide(
-                            color: state.metricTemperatureObject.temperatureError
-                                ? Colors.red
-                                : Colors.black)),
+                            color:
+                                state.metricTemperatureObject.temperatureError
+                                    ? Colors.red
+                                    : Colors.black)),
                     labelText: "Enter temperature",
+                    errorText: state.metricTemperatureObject.temperatureError
+                        ? 'Enter a valid temperature'
+                        : null,
                   ),
                   keyboardType: TextInputType.number,
                   onChanged: (val) {
-                    state.metricTemperatureObject.temperature = double.tryParse(val) ?? 0.0;
+                    state.metricTemperatureObject.temperature =
+                        double.tryParse(val) ?? 0.0;
                   },
                 ),
               ),
               const SizedBox(width: 10),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      state.metricTemperatureObject.tempUnitCelsius ? mainColor : Colors.white,
+                  backgroundColor: state.metricTemperatureObject.tempUnitCelsius
+                      ? mainColor
+                      : Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(4),
                   ),
@@ -77,15 +93,18 @@ class _TemperatureInputState extends State<TemperatureInput> {
                   "°C",
                   style: TextStyle(
                     fontSize: 20,
-                    color: state.metricTemperatureObject.tempUnitCelsius ? Colors.white : mainColor,
+                    color: state.metricTemperatureObject.tempUnitCelsius
+                        ? Colors.white
+                        : mainColor,
                   ),
                 ),
               ),
               const SizedBox(width: 10),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      state.metricTemperatureObject.tempUnitCelsius ? Colors.white : mainColor,
+                  backgroundColor: state.metricTemperatureObject.tempUnitCelsius
+                      ? Colors.white
+                      : mainColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(4),
                   ),
@@ -101,7 +120,9 @@ class _TemperatureInputState extends State<TemperatureInput> {
                   "°F",
                   style: TextStyle(
                     fontSize: 20,
-                    color: state.metricTemperatureObject.tempUnitCelsius ? mainColor : Colors.white,
+                    color: state.metricTemperatureObject.tempUnitCelsius
+                        ? mainColor
+                        : Colors.white,
                   ),
                 ),
               )
@@ -111,13 +132,13 @@ class _TemperatureInputState extends State<TemperatureInput> {
           ElevatedButton(
             child: Text(
               'Duration: '
-              '${_dur.inMinutes.remainder(60).toString().padLeft(2, '0')} minutes '
-              '${_dur.inSeconds.remainder(60).toString().padLeft(2, '0')} seconds',
+              '${state.metricTemperatureObject.duration.inMinutes.remainder(60).toString().padLeft(2, '0')} minutes '
+              '${state.metricTemperatureObject.duration.inSeconds.remainder(60).toString().padLeft(2, '0')} seconds',
               style: const TextStyle(fontSize: 18),
             ),
             onPressed: () {
               // Temporarily hold the selected duration in the dialog
-              Duration tempDur = _dur;
+              Duration tempDur = state.metricTemperatureObject.duration;
 
               showDialog(
                 context: context,
@@ -138,6 +159,8 @@ class _TemperatureInputState extends State<TemperatureInput> {
                             onChange: (val) {
                               setDialogState(() {
                                 tempDur = val;
+                                widget.measurementState.metricTemperatureObject
+                                    .duration = val;
                               });
                             },
                           ),
@@ -153,7 +176,7 @@ class _TemperatureInputState extends State<TemperatureInput> {
                             onPressed: () {
                               // Commit the chosen duration to the parent state
                               setState(() {
-                                _dur = tempDur;
+                                state.metricTemperatureObject.duration = tempDur;
                               });
                               Navigator.of(context).pop();
                             },
@@ -167,6 +190,12 @@ class _TemperatureInputState extends State<TemperatureInput> {
               );
             },
           ),
+          widget.measurementState.metricTemperatureObject.durationError
+              ? const Text(
+                  "Please pick a duration",
+                  style: TextStyle(color: Colors.red),
+                )
+              : const SizedBox()
           //MinuteSecondPicker(onDurationChanged: (d) {})
         ],
       ),

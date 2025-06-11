@@ -1,3 +1,5 @@
+
+import 'package:flutter/material.dart';
 import 'package:waterwatch/util/metric_objects/metric_object.dart';
 
 class TemperatureObject extends MetricObject {
@@ -10,6 +12,9 @@ class TemperatureObject extends MetricObject {
   bool temperatureError = false;
   bool durationError = false;
 
+  TextEditingController sensorController = TextEditingController();
+  TextEditingController temperatureController = TextEditingController();
+
   @override
   void clear() {
     sensorType = "";
@@ -20,6 +25,9 @@ class TemperatureObject extends MetricObject {
     sensorTypeError = false;
     temperatureError = false;
     durationError = false;
+
+    sensorController.text = "";
+    temperatureController.text = "";
   }
 
   @override

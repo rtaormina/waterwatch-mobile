@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:waterwatch/screens/home_screen.dart';
+import 'package:waterwatch/screens/home_widgets/buttons/submit_button.dart';
 import 'package:waterwatch/screens/home_widgets/location_selector.dart';
 import 'package:waterwatch/screens/home_widgets/metrics/temperature_input.dart';
 import 'package:waterwatch/screens/home_widgets/source_selector.dart';
@@ -64,80 +65,72 @@ void main() {
     });
   });
 
-  // group('TemperatureInput + Submit/Clear behavior', () {
-  //   testWidgets(
-  //     'entering text and tapping Submit leaves fields intact; tapping Clear empties them',
-  //     (WidgetTester tester) async {
-  //       // 1) Prepare a MeasurementState with metricTemperature = true
-  //       final measurementState = MeasurementState.initializeState();
+  group('TemperatureInput + Submit/Clear behavior', () {
+    testWidgets('Homescreen loads and temperature metric selection works',
+        (WidgetTester tester) async {
+      MeasurementState state = MeasurementState.initializeState();
+      state.testMode = true;
 
-  //       // 2) Pump HomeScreen inside a MaterialApp
-  //       await tester.pumpWidget(
-  //         MaterialApp(
-  //           home: HomeScreen(measurementState: measurementState),
-  //         ),
-  //       );
-  //       await tester.pumpAndSettle();
+      //custom location function
+      Future<void> mockGetLocation(MeasurementState state) async {
+        state.currentLocation = const LatLng(1, 1);
+        state.reloadLocation();
+      }
 
-  //       // 3) Find the two TextFields by their labelText
-  //       final sensorFieldFinder = find.byWidgetPredicate(
-  //         (widget) {
-  //           return widget is TextField &&
-  //               widget.decoration?.labelText == 'Sensor Type';
-  //         },
-  //         description: 'TextField with labelText "Sensor Type"',
-  //       );
-  //       final tempFieldFinder = find.byWidgetPredicate(
-  //         (widget) {
-  //           return widget is TextField &&
-  //               widget.decoration?.labelText == 'Enter temperature';
-  //         },
-  //         description: 'TextField with labelText "Enter temperature"',
-  //       );
+      // Define a Widget
+      final myWidget = MaterialApp(
+        home: HomeScreen(
+          measurementState: state,
+          getLocation: mockGetLocation,
+        ),
+      );
 
-  //       expect(sensorFieldFinder, findsOneWidget,
-  //           reason: 'Should find exactly one TextField labeled "Sensor Type".');
-  //       expect(tempFieldFinder, findsOneWidget,
-  //           reason:
-  //               'Should find exactly one TextField labeled "Enter temperature".');
+      // Build myWidget and trigger a frame.
+      await tester.pumpWidget(myWidget);
 
-  //       // 4) Enter some text into each field
-  //       await tester.enterText(sensorFieldFinder, 'MySensor');
-  //       await tester.enterText(tempFieldFinder, '25');
-  //       await tester.pumpAndSettle();
+      await tester.pump(); // extra pump to process any microtasks
+      await tester.pumpAndSettle();
 
-  //       // Verify the text actually appears in the widget tree
-  //       expect(find.text('MySensor'), findsOneWidget);
-  //       expect(find.text('25'), findsOneWidget);
+      // Verify myWidget shows some text
+      expect(find.byType(LocationSelector), findsOneWidget);
+      expect(find.byType(SourceSelector), findsOneWidget);
 
-  //       // 5) Tap the SubmitButton
-  //       final submitButtonFinder = find.byType(SubmitButton);
-  //       expect(submitButtonFinder, findsOneWidget,
-  //           reason: 'SubmitButton should be present below the list.');
-  //       await tester.tap(submitButtonFinder);
-  //       await tester.pumpAndSettle();
+      // first make sure the list is built
+      await tester.pumpAndSettle();
 
-  //       // Since functionality is not implemented yet, we expect the text to remain
-  //       expect(find.text('MySensor'), findsOneWidget,
-  //           reason:
-  //               'Tapping Submit (unimplemented) should not clear the fields yet.');
-  //       expect(find.text('25'), findsOneWidget);
+      // After pumpAndSettle():
+      final listFinder = find.byKey(const Key('home_list'));
 
-  //       // 6) Tap the ClearButton
-  //       final clearButtonFinder = find.byType(ClearButton);
-  //       expect(clearButtonFinder, findsOneWidget,
-  //           reason: 'ClearButton should be present next to SubmitButton.');
-  //       await tester.tap(clearButtonFinder);
-  //       await tester.pumpAndSettle();
+      // Drag upward by 200 pixels to bring more children into view:
+      await tester.drag(listFinder, const Offset(0, -400));
+      await tester.pumpAndSettle();
 
-  //       // Now both fields should be empty (no lingering text)
-  //       expect(find.text('MySensor'), findsNothing,
-  //           reason:
-  //               'After tapping Clear, the "Sensor Type" field should be empty.');
-  //       expect(find.text('25'), findsNothing,
-  //           reason:
-  //               'After tapping Clear, the "Enter temperature" field should be empty.');
-  //     },
-  //   );
-  // });
+      // Now MetricsSelector will have been built:
+      expect(find.byKey(const Key('temperature_input')), findsOneWidget);
+
+      // 3. Find and fill the Sensor Type field
+      final sensorTypeField = find.byWidgetPredicate(
+        (w) => w is TextField && w.decoration?.labelText == 'Sensor Type',
+        description: 'TextField with labelText "Sensor Type"',
+      );
+      expect(sensorTypeField, findsOneWidget);
+      await tester.enterText(sensorTypeField, 'MySensor');
+      await tester.pumpAndSettle();
+
+      // 4. Find and fill the Temperature field
+      final tempField = find.byWidgetPredicate(
+        (w) => w is TextField && w.decoration?.labelText == 'Enter temperature',
+        description: 'TextField with labelText "Enter temperature"',
+      );
+      expect(tempField, findsOneWidget);
+      await tester.enterText(tempField, '23.5');
+      await tester.pumpAndSettle();
+
+      state.metricTemperatureObject.duration = Duration(seconds: 20);
+
+      // 6. Verify the texts are present
+      expect(find.text('MySensor'), findsOneWidget);
+      expect(find.text('23.5'), findsOneWidget);
+    });
+  });
 }
