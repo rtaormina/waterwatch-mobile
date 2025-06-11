@@ -18,7 +18,7 @@ void main() {
 
       // Build myWidget and trigger a frame.
       await tester.pumpWidget(myWidget);
-
+      await tester.pumpAndSettle();
       // Verify myWidget shows some text
       expect(find.byType(LocationSelector), findsOneWidget);
       expect(find.byType(SourceSelector), findsOneWidget);
