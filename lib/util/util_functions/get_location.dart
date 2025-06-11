@@ -1,4 +1,6 @@
 import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:waterwatch/util/measurement_state.dart';
 
 Future<Position> determinePosition() async {
   bool serviceEnabled;
@@ -38,4 +40,24 @@ class PermissionDeniedException implements Exception {
   PermissionDeniedException(this.message);
   @override
   String toString() => 'PermissionDeniedException: $message';
+}
+
+Future<void> fetchDeviceLocation(MeasurementState measurementState) async {
+  try {
+    final pos = await determinePosition();
+    final deviceLatLng = LatLng(pos.latitude, pos.longitude);
+
+    measurementState.currentLocation = deviceLatLng;
+    measurementState.location = deviceLatLng;
+    measurementState.reloadLocation();
+  } on LocationServiceDisabledException {
+    measurementState.locationError = 'Location services are disabled.';
+    measurementState.reloadLocation();
+  } on PermissionDeniedException catch (e) {
+    measurementState.locationError = e.message;
+    measurementState.reloadLocation();
+  } catch (e) {
+    measurementState.locationError = 'Error obtaining location: $e';
+    measurementState.reloadLocation();
+  }
 }

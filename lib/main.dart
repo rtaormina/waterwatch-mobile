@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:waterwatch/screens/home_screen.dart';
 import 'package:waterwatch/util/measurement_state.dart';
+import 'package:waterwatch/util/util_functions/get_location.dart';
 
 void main() async {
   runApp(
@@ -28,7 +29,7 @@ void main() async {
           secondary: const Color(0xFFD7E9F4), // ← this is your “accent” color
         ),
       ),
-      home: HomeScreen(measurementState: MeasurementState.initializeState(),),
+      home: HomeScreen(measurementState: MeasurementState.initializeState(), getLocation: fetchDeviceLocation,),
     ),
   );
 }

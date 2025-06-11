@@ -9,15 +9,17 @@ import 'package:waterwatch/theme.dart';
 import 'package:waterwatch/util/measurement_state.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.measurementState});
+  const HomeScreen({super.key, required this.measurementState, required this.getLocation});
 
   final MeasurementState measurementState;
+  final Future<void> Function(MeasurementState) getLocation;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
   @override
   Widget build(BuildContext context) {
     final bool keyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
@@ -47,6 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   LocationSelector(
                     measurementState: widget.measurementState,
+                    getLocation: widget.getLocation,
                   ),
                   SourceSelector(
                     measurementState: widget.measurementState,

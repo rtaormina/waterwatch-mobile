@@ -1,59 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:waterwatch/components/card_component.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:waterwatch/theme.dart';
 import 'package:waterwatch/util/measurement_state.dart';
-import 'package:waterwatch/util/util_functions/get_location.dart';
 
 class LocationSelector extends StatefulWidget {
-  const LocationSelector({super.key, required this.measurementState});
+  const LocationSelector({super.key, required this.measurementState, required this.getLocation});
 
   final MeasurementState measurementState;
+  final Future<void> Function(MeasurementState) getLocation;
 
   @override
-  State<LocationSelector> createState() =>
-      _LocationSelectorState(measurementState: measurementState);
+  State<LocationSelector> createState() => _LocationSelectorState();
 }
 
 class _LocationSelectorState extends State<LocationSelector> {
-  final MeasurementState measurementState;
-
-  _LocationSelectorState({required this.measurementState});
-
   @override
   void initState() {
     super.initState();
-    _fetchDeviceLocation();
-  }
-
-  Future<void> _fetchDeviceLocation() async {
-    try {
-      final pos = await determinePosition();
-      final deviceLatLng = LatLng(pos.latitude, pos.longitude);
-
-      setState(() {
-        measurementState.currentLocation = deviceLatLng;
-        measurementState.location = deviceLatLng;
-      });
-
-    } on LocationServiceDisabledException {
-      setState(() {
-        measurementState.locationError = 'Location services are disabled.';
-      });
-    } on PermissionDeniedException catch (e) {
-      setState(() {
-        measurementState.locationError = e.message;
-      });
-    } catch (e) {
-      setState(() {
-        measurementState.locationError = 'Error obtaining location: $e';
-      });
-    }
+    widget.getLocation(widget.measurementState);
   }
 
   @override
   Widget build(BuildContext context) {
+    MeasurementState measurementState = widget.measurementState;
+    measurementState.reloadLocation = () {
+      setState(() {});
+    };
     return CardComponent(
       title: "Measurement",
       child: Column(
@@ -66,18 +39,21 @@ class _LocationSelectorState extends State<LocationSelector> {
             child: Stack(
               children: [
                 // If still loading (no location & no error), show a spinner.
-                if (measurementState.currentLocation == null && measurementState.locationError == null)
+                if (measurementState.currentLocation == null &&
+                    measurementState.locationError == null)
                   const Center(child: CircularProgressIndicator()),
 
                 // Otherwise (either we have a location _or_ an error occurred),
                 // display the map. If _currentLocation is null (error case),
                 // it will default to _initialCenter.
-                if (!(measurementState.currentLocation == null && measurementState.locationError == null))
+                if (!(measurementState.currentLocation == null &&
+                    measurementState.locationError == null))
                   FlutterMap(
                     options: MapOptions(
                       minZoom: 2,
                       maxZoom: 18,
-                      initialCenter: measurementState.currentLocation ?? measurementState.initialCenter,
+                      initialCenter: measurementState.currentLocation ??
+                          measurementState.initialCenter,
                       initialZoom: measurementState.currentZoom,
                       interactionOptions: const InteractionOptions(
                           flags:

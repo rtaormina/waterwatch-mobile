@@ -25,6 +25,7 @@ class MeasurementState {
 
   //reload function for home page
   void Function() reloadHomePage = () {};
+  void Function() reloadLocation = () {};
 
   //clear out all values
   void clear() {}

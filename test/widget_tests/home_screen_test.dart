@@ -11,14 +11,21 @@ void main() {
   group('HomeScreen', () {
     testWidgets('Homescreen loads and temperature metric selection works',
         (WidgetTester tester) async {
+
+          //custom location function
+          Future<void> mockGetLocation(MeasurementState state) async {
+            state.
+          }
+
       // Define a Widget
       final myWidget = MaterialApp(
           home:
-              HomeScreen(measurementState: MeasurementState.initializeState()));
+              HomeScreen(measurementState: MeasurementState.initializeState(), getLocation: mockGetLocation,));
 
       // Build myWidget and trigger a frame.
       await tester.pumpWidget(myWidget);
       await tester.pumpAndSettle();
+
       // Verify myWidget shows some text
       expect(find.byType(LocationSelector), findsOneWidget);
       expect(find.byType(SourceSelector), findsOneWidget);
