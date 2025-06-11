@@ -3,8 +3,11 @@ import 'package:waterwatch/components/card_component.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:waterwatch/screens/home_widgets/metrics/temperature_input.dart';
 import 'package:waterwatch/theme.dart';
 import 'package:waterwatch/theme.dart';
+import 'package:waterwatch/util/measurement_state.dart';
+import 'package:waterwatch/util/metric_objects/temperature_object.dart';
 
 /// Returns the current [Position], after ensuring the user has granted
 /// location permission. Throws a [PermissionDeniedException] if permission
@@ -51,13 +54,18 @@ class PermissionDeniedException implements Exception {
 }
 
 class LocationSelector extends StatefulWidget {
-  const LocationSelector({super.key});
+  const LocationSelector({super.key, required this.measurementState});
+
+  final MeasurementState measurementState;
 
   @override
-  State<LocationSelector> createState() => _LocationSelectorState();
+  State<LocationSelector> createState() =>
+      _LocationSelectorState(measurementState: measurementState);
 }
 
 class _LocationSelectorState extends State<LocationSelector> {
+  final MeasurementState measurementState;
+
   /// The device’s current location (obtained in initState).
   LatLng? _currentLocation;
 
@@ -72,6 +80,8 @@ class _LocationSelectorState extends State<LocationSelector> {
 
   // The selected point (if any)
   LatLng? _selectedPoint;
+
+  _LocationSelectorState({required this.measurementState});
 
   @override
   void initState() {
@@ -89,6 +99,8 @@ class _LocationSelectorState extends State<LocationSelector> {
         _currentLocation = deviceLatLng;
         // 2) initialize the “selectedPoint” to that same location
         _selectedPoint = deviceLatLng;
+
+        measurementState.location = deviceLatLng;
       });
     } on LocationServiceDisabledException {
       setState(() {
@@ -138,6 +150,7 @@ class _LocationSelectorState extends State<LocationSelector> {
                       onTap: (tapPos, tappedLatLng) {
                         setState(() {
                           _selectedPoint = tappedLatLng;
+                          measurementState.location = tappedLatLng;
                         });
                       },
                     ),

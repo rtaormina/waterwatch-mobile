@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:latlong2/latlong.dart';
 import 'package:waterwatch/util/metric_objects/temperature_object.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class MeasurementState {
   //create a new instance of MeasurementState
@@ -11,7 +12,7 @@ class MeasurementState {
   }
 
   //general measurement state
-  String waterSource = 'River';
+  String waterSource = 'network';
   LatLng location = const LatLng(0, 0);
 
   //selected metrics
@@ -47,8 +48,8 @@ class MeasurementState {
     };
 
     final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day).toIso8601String();
-    final time = DateTime(now.hour, now.minute, now.second).toIso8601String();
+    final today = DateFormat('yyyy-MM-dd').format(now);
+    final time = DateFormat('HH:mm:ss').format(now);
 
     // Encode your payload as JSON
     final body = jsonEncode({
@@ -57,10 +58,14 @@ class MeasurementState {
       "local_time": time,
       "location": {
         "type": "Point",
-        "coordinates": [location.latitude, location.longitude]
+        "coordinates": [location.longitude, location.latitude]
       },
       "water_source": waterSource,
-      "temperature": metricTemperatureObject.temperature
+      "temperature": {
+        "value": metricTemperatureObject.temperature,
+        "sensor": metricTemperatureObject.sensorType,
+        "time_waited": formatDurationToMinSec(metricTemperatureObject.duration)
+      }
     });
 
     // Send the POST
@@ -70,11 +75,12 @@ class MeasurementState {
     if (response.statusCode == 200 || response.statusCode == 201) {
       // Decode and return JSON
       print(jsonDecode(response.body));
+      print("brrr");
       return jsonDecode(response.body) as Map<String, dynamic>;
     } else {
       // Handle error https://stackoverflow.com/questions/22812721/why-do-i-get-csrf-cookie-not-set-when-post-to-django-rest-framework
       //AssertionError: The `request` argument must be an instance of `django.http.HttpRequest`, not `rest_framework.request.Request`.
-      //backend     | [10/Jun/2025 16:59:14] "POST /api/measurements/ HTTP/1.0" 500 120500 
+      //backend     | [10/Jun/2025 16:59:14] "POST /api/measurements/ HTTP/1.0" 500 120500
       throw http.ClientException(
         'Failed POST (${response.statusCode}): ${response.body}',
         uri,
@@ -112,4 +118,11 @@ class MeasurementState {
     print(csrfToken);
     return csrfToken;
   }
+}
+
+String formatDurationToMinSec(Duration duration) {
+  String twoDigits(int n) => n.toString().padLeft(2, '0');
+  final minutes = twoDigits(duration.inMinutes.remainder(60));
+  final seconds = twoDigits(duration.inSeconds.remainder(60));
+  return '$minutes:$seconds';
 }

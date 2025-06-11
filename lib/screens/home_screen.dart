@@ -45,7 +45,9 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: ListView(
                 children: [
-                  const LocationSelector(),
+                  LocationSelector(
+                    measurementState: widget.measurementState,
+                  ),
                   SourceSelector(
                     measurementState: widget.measurementState,
                   ),

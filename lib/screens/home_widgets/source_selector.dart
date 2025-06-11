@@ -32,7 +32,7 @@ class _SourceSelectorState extends State<SourceSelector> {
             ),
             dropdownColor: Colors.white,
             value: widget.measurementState.waterSource,
-            items: <String>['River', 'Lake', 'Well', 'Tap Water']
+            items: <String>['network', 'rooftop tank', 'well', 'other']
                 .map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
                 value: value,
