@@ -65,7 +65,7 @@ class _LocationSelectorState extends State<LocationSelector> {
                       },
                     ),
                     children: [
-                      TileLayer(
+                      measurementState.testMode ? const SizedBox() : TileLayer(
                         urlTemplate:
                             'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                         subdomains: const ['a', 'b', 'c'],

@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 class MeasurementState {
+  bool testMode = false;
   //create a new instance of MeasurementState
   static MeasurementState initializeState() {
     return MeasurementState();
