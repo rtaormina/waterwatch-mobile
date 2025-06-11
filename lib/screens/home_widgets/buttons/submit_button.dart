@@ -20,14 +20,13 @@ class SubmitButton extends StatelessWidget {
                 borderRadius: BorderRadius.circular(4),
               ),
             ),
-            onPressed: () {
+            onPressed: () async {
               bool valid = measurementState.validateMetrics();
 
               measurementState.showLoading = true;
               measurementState.reloadHomePage();
               if (valid) {
-                print("valid values");
-                measurementState.sendData();
+                await measurementState.sendData();
                 measurementState.clear();
               }
               measurementState.showLoading = false;
