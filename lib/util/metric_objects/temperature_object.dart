@@ -11,27 +11,41 @@ class TemperatureObject extends MetricObject {
   bool durationError = false;
 
   @override
-  void validate() {
-    sensorTypeValid();
-    temperatureValid();
-    durationValid();
+  void clear() {
+    sensorType = "";
+    temperature = -1;
+    duration = Duration.zero;
+    tempUnitCelsius = true;
+
+    sensorTypeError = false;
+    temperatureError = false;
+    durationError = false;
   }
 
-  void sensorTypeValid() {
-    print("sensor error");
+  @override
+  bool validate() {
+    bool sensorValid = sensorTypeValid();
+    bool tempValid = temperatureValid();
+    bool durationValidB = durationValid();
+    return sensorValid && tempValid && durationValidB;
+  }
+
+  bool sensorTypeValid() {
     sensorTypeError = sensorType.isEmpty;
-    print(sensorTypeError);
+    return !sensorTypeError;
   }
 
-  void temperatureValid() {
+  bool temperatureValid() {
     if (tempUnitCelsius) {
       temperatureError = temperature < 0 || temperature > 100;
     } else {
       temperatureError = temperature < 32 || temperature > 212;
     }
+    return !temperatureError;
   }
 
-  void durationValid() {
+  bool durationValid() {
     durationError = duration.inSeconds <= 0;
+    return !durationError;
   }
 }

@@ -24,7 +24,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final bool keyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
     widget.measurementState.reloadHomePage = () {
-      print("Reloading Home Page");
       setState(() {});
       print(widget.measurementState.metricTemperatureObject.sensorTypeError);
     };
@@ -41,47 +40,53 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Colors.white, fontWeight: FontWeight.w500, fontSize: 30),
           ),
         ),
-        body: Column(
-          mainAxisSize: MainAxisSize.min,
+        body: Stack(
           children: [
-            Expanded(
-              child: ListView(
-                key: const Key('home_list'),
-                shrinkWrap: true,
-                children: [
-                  LocationSelector(
-                    measurementState: widget.measurementState,
-                    getLocation: widget.getLocation,
-                  ),
-                  SourceSelector(
-                    measurementState: widget.measurementState,
-                  ),
-                  
-                  MetricsSelector(
-                    measurementState: widget.measurementState,
-                    key: const Key('metrics_selector'),
-                  ),
-                  
-                  widget.measurementState.metricTemperature
-                      ? TemperatureInput(
-                        key: const Key("temperature_input"),
-                          measurementState: widget.measurementState,
-                        )
-                      : const SizedBox(),
-                  const SizedBox(height: 10),
-                ],
+            widget.measurementState.showLoading ? Container(
+              color: const Color.fromARGB(68, 255, 255, 255),
+              child: Center(child: CircularProgressIndicator(),),) :
+            Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Expanded(
+                child: ListView(
+                  key: const Key('home_list'),
+                  shrinkWrap: true,
+                  children: [
+                    LocationSelector(
+                      measurementState: widget.measurementState,
+                      getLocation: widget.getLocation,
+                    ),
+                    SourceSelector(
+                      measurementState: widget.measurementState,
+                    ),
+                    
+                    MetricsSelector(
+                      measurementState: widget.measurementState,
+                      key: const Key('metrics_selector'),
+                    ),
+                    
+                    widget.measurementState.metricTemperature
+                        ? TemperatureInput(
+                          key: const Key("temperature_input"),
+                            measurementState: widget.measurementState,
+                          )
+                        : const SizedBox(),
+                    const SizedBox(height: 10),
+                  ],
+                ),
               ),
-            ),
-            keyboardOpen
-                ? const SizedBox()
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ClearButton(),
-                      SubmitButton(measurementState: widget.measurementState)
-                    ],
-                  )
-          ],
+              keyboardOpen
+                  ? const SizedBox()
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ClearButton(),
+                        SubmitButton(measurementState: widget.measurementState)
+                      ],
+                    )
+            ],
+          ),]
         ),
       ),
     );

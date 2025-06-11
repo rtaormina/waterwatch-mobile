@@ -21,10 +21,16 @@ class SubmitButton extends StatelessWidget {
               ),
             ),
             onPressed: () {
-              print("Submit button pressed");
-              measurementState.validateMetrics();
-              measurementState.sendData();
-              measurementState.clear();
+              bool valid = measurementState.validateMetrics();
+
+              measurementState.showLoading = true;
+              measurementState.reloadHomePage();
+              if (valid) {
+                print("valid values");
+                measurementState.sendData();
+                measurementState.clear();
+              }
+              measurementState.showLoading = false;
               measurementState.reloadHomePage();
             },
             child: const Text(

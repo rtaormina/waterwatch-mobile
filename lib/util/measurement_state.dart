@@ -24,16 +24,20 @@ class MeasurementState {
   bool metricTemperature = true;
   TemperatureObject metricTemperatureObject = TemperatureObject();
 
+  bool showLoading = false;
+  
   //reload function for home page
   void Function() reloadHomePage = () {};
   void Function() reloadLocation = () {};
 
   //clear out all values
-  void clear() {}
+  void clear() {
+    metricTemperatureObject.clear();
+  }
 
   //validating all metrics
-  void validateMetrics() {
-    metricTemperatureObject.validate();
+  bool validateMetrics() {
+    return metricTemperatureObject.validate();
   }
 
   Future<Map<String, dynamic>> sendData() async {
