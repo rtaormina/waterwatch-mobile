@@ -165,7 +165,7 @@ void main() {
       await tester.enterText(tempField, '23.5');
       await tester.pumpAndSettle();
 
-      state.metricTemperatureObject.duration = Duration(seconds: 20);
+      state.metricTemperatureObject.duration = const Duration(seconds: 20);
 
       // 6. Verify the texts are present
       expect(find.text('MySensor'), findsOneWidget);
@@ -246,7 +246,7 @@ void main() {
       await tester.enterText(tempField, '23.5');
       await tester.pumpAndSettle();
 
-      fakeState.metricTemperatureObject.duration = Duration(seconds: 20);
+      fakeState.metricTemperatureObject.duration = const Duration(seconds: 20);
 
       // 6. Verify the texts are present
       expect(find.text('MySensor'), findsOneWidget);

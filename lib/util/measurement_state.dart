@@ -25,7 +25,7 @@ class MeasurementState {
   TemperatureObject metricTemperatureObject = TemperatureObject();
 
   bool showLoading = false;
-  
+
   //reload function for home page
   void Function() reloadHomePage = () {};
   void Function() reloadLocation = () {};
@@ -41,11 +41,11 @@ class MeasurementState {
   }
 
   Future<Map<String, dynamic>> sendData() async {
-    String API_URL = "https://waterwatch.tudelft.nl";
+    String apiUrl = "https://waterwatch.tudelft.nl";
     //check if online
 
     //online
-    String url = "$API_URL/api/measurements/";
+    String url = "$apiUrl/api/measurements/";
     final uri = Uri.parse(url);
 
     // Optional: set headers

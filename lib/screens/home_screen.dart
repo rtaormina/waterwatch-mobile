@@ -24,9 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final bool keyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
     widget.measurementState.reloadHomePage = () {
-      setState(() {});
-      print(widget.measurementState.metricTemperatureObject.sensorTypeError);
-    };
+      setState(() {});    };
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -44,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
           widget.measurementState.showLoading
               ? Container(
                   color: const Color.fromARGB(68, 255, 255, 255),
-                  child: Center(
+                  child: const Center(
                     child: CircularProgressIndicator(),
                   ),
                 )
