@@ -36,6 +36,6 @@ flutter:
   generate: true
 
   fonts:
-    - family: MyFont
+    - family: Noto Sans
       fonts:
         - asset: assets/Noto_Sans/static/NotoSans-Black.ttf

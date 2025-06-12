@@ -17,7 +17,7 @@ class TemperatureObject extends MetricObject {
 
   @override
   void clear() {
-    sensorType = "";
+    sensorType = "Digital Thermometer";
     temperature = -1;
     duration = Duration.zero;
     tempUnitCelsius = true;
