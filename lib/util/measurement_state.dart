@@ -113,7 +113,7 @@ Future<String> getCSRFToken() async {
   });
 
   final setCookie = response.headers['set-cookie'];
-  print(setCookie);
+  
   if (setCookie == null) {
     throw Exception('Missing Set-Cookie header when fetching CSRF token');
   }
@@ -123,6 +123,6 @@ Future<String> getCSRFToken() async {
         orElse: () => throw Exception('No csrftoken segment in: $setCookie'),
       );
   final token = csrfPair.split('=')[1];
-  print(token);
+
   return token;
 }

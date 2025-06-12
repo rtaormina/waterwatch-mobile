@@ -30,7 +30,8 @@ Future<Position> determinePosition() async {
 
   // 3. At this point, permission is granted, so we can fetch the location:
   return await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high);
+    
+      );
 }
 
 class LocationServiceDisabledException implements Exception {}
