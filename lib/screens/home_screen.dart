@@ -55,15 +55,18 @@ class _HomeScreenState extends State<HomeScreen> {
                           measurementState: widget.measurementState,
                         )
                       : const SizedBox(),
-                  const SizedBox(height: 200),
+                  const SizedBox(height: 10),
                 ],
               ),
             ),
             keyboardOpen
                 ? const SizedBox()
-                : const Row(
+                : Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [ClearButton(), SubmitButton()],
+                    children: [
+                      const ClearButton(),
+                      SubmitButton(measurementState: widget.measurementState)
+                    ],
                   )
           ],
         ),
