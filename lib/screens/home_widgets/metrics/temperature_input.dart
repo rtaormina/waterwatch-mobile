@@ -23,27 +23,36 @@ class _TemperatureInputState extends State<TemperatureInput> {
       title: "Temperature",
       child: Column(
         children: [
-          TextField(
-            controller: widget
-                .measurementState.metricTemperatureObject.sensorController,
-            decoration: InputDecoration(
-              fillColor: Colors.white,
-              filled: true,
-              border: OutlineInputBorder(
-                  borderSide: BorderSide(
-                      color: state.metricTemperatureObject.sensorTypeError
-                          ? Colors.red
-                          : Colors.black)),
-              labelText: "Sensor Type",
-              errorText: state.metricTemperatureObject.sensorTypeError
-                  ? 'Please enter a sensor type'
-                  : null,
-            ),
-            onChanged: (value) {
-              state.metricTemperatureObject.sensorType = value;
-            },
-            keyboardType: TextInputType.text,
+          InputDecorator(
+          decoration: const InputDecoration(
+            fillColor: Colors.white,
+            filled: true,
+            border: OutlineInputBorder(),
+            contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
           ),
+          child: DropdownButton<String>(
+            underline: const SizedBox(),
+            isExpanded: true,
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 16,
+            ),
+            dropdownColor: Colors.white,
+            value: widget.measurementState.metricTemperatureObject.sensorType,
+            items: <String>['Analog Thermometer', 'Digital Thermometer', 'Infrared Thermometer', 'Other']
+                .map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            onChanged: (String? newValue) {
+              setState(() {
+                widget.measurementState.metricTemperatureObject.sensorType = newValue!;
+              });
+            },
+          ),
+        ),
           const SizedBox(height: 10),
           Row(
             children: [

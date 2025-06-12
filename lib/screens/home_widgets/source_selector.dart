@@ -45,6 +45,6 @@ class _SourceSelectorState extends State<SourceSelector> {
               });
             },
           ),
-        ));
+        ),);
   }
 }
