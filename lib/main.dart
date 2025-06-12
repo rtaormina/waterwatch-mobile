@@ -7,6 +7,7 @@ void main() async {
   runApp(
     MaterialApp(
       theme: ThemeData(
+        fontFamily: 'NotoSans',
         colorScheme: ColorScheme.fromSwatch(
           primarySwatch: const MaterialColor(
             0xFF00A6D6,

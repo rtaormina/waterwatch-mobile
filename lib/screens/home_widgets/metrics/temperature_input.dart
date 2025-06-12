@@ -14,7 +14,6 @@ class TemperatureInput extends StatefulWidget {
 }
 
 class _TemperatureInputState extends State<TemperatureInput> {
-
   @override
   Widget build(BuildContext context) {
     MeasurementState state = widget.measurementState;
@@ -24,35 +23,40 @@ class _TemperatureInputState extends State<TemperatureInput> {
       child: Column(
         children: [
           InputDecorator(
-          decoration: const InputDecoration(
-            fillColor: Colors.white,
-            filled: true,
-            border: OutlineInputBorder(),
-            contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-          ),
-          child: DropdownButton<String>(
-            underline: const SizedBox(),
-            isExpanded: true,
-            style: const TextStyle(
-              color: Colors.black,
-              fontSize: 16,
+            decoration: const InputDecoration(
+              fillColor: Colors.white,
+              filled: true,
+              border: OutlineInputBorder(),
+              contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
             ),
-            dropdownColor: Colors.white,
-            value: widget.measurementState.metricTemperatureObject.sensorType,
-            items: <String>['Analog Thermometer', 'Digital Thermometer', 'Infrared Thermometer', 'Other']
-                .map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              setState(() {
-                widget.measurementState.metricTemperatureObject.sensorType = newValue!;
-              });
-            },
+            child: DropdownButton<String>(
+              underline: const SizedBox(),
+              isExpanded: true,
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 16,
+              ),
+              dropdownColor: Colors.white,
+              value: widget.measurementState.metricTemperatureObject.sensorType,
+              items: <String>[
+                'Analog Thermometer',
+                'Digital Thermometer',
+                'Infrared Thermometer',
+                'Other'
+              ].map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                setState(() {
+                  widget.measurementState.metricTemperatureObject.sensorType =
+                      newValue!;
+                });
+              },
+            ),
           ),
-        ),
           const SizedBox(height: 10),
           Row(
             children: [
@@ -140,7 +144,7 @@ class _TemperatureInputState extends State<TemperatureInput> {
           const SizedBox(height: 10),
           ElevatedButton(
             child: Text(
-              'Duration: '
+              'Time Waited: '
               '${state.metricTemperatureObject.duration.inMinutes.remainder(60).toString().padLeft(2, '0')} minutes '
               '${state.metricTemperatureObject.duration.inSeconds.remainder(60).toString().padLeft(2, '0')} seconds',
               style: const TextStyle(fontSize: 18),
@@ -185,7 +189,8 @@ class _TemperatureInputState extends State<TemperatureInput> {
                             onPressed: () {
                               // Commit the chosen duration to the parent state
                               setState(() {
-                                state.metricTemperatureObject.duration = tempDur;
+                                state.metricTemperatureObject.duration =
+                                    tempDur;
                               });
                               Navigator.of(context).pop();
                             },

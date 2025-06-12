@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:waterwatch/util/metric_objects/metric_object.dart';
 
 class TemperatureObject extends MetricObject {
-  String sensorType = "";
+  String sensorType = "Digital Thermometer";
   double temperature = -1;
   Duration duration = Duration.zero;
   bool tempUnitCelsius = true;

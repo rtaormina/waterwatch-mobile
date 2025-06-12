@@ -15,7 +15,7 @@ class _SourceSelectorState extends State<SourceSelector> {
   @override
   Widget build(BuildContext context) {
     return CardComponent(
-        title: "Water source",
+        title: "Water Source",
         child: InputDecorator(
           decoration: const InputDecoration(
             fillColor: Colors.white,

@@ -34,3 +34,8 @@ flutter:
 
   # Enable generation of localized Strings from arb files.
   generate: true
+
+  fonts:
+    - family: MyFont
+      fonts:
+        - asset: assets/Noto_Sans/static/NotoSans-Black.ttf
