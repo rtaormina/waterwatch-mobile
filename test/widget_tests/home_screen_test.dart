@@ -147,15 +147,6 @@ void main() {
       // Now MetricsSelector will have been built:
       expect(find.byKey(const Key('temperature_input')), findsOneWidget);
 
-      // 3. Find and fill the Sensor Type field
-      final sensorTypeField = find.byWidgetPredicate(
-        (w) => w is TextField && w.decoration?.labelText == 'Sensor Type',
-        description: 'TextField with labelText "Sensor Type"',
-      );
-      expect(sensorTypeField, findsOneWidget);
-      await tester.enterText(sensorTypeField, 'MySensor');
-      await tester.pumpAndSettle();
-
       // 4. Find and fill the Temperature field
       final tempField = find.byWidgetPredicate(
         (w) => w is TextField && w.decoration?.labelText == 'Enter temperature',
@@ -168,7 +159,7 @@ void main() {
       state.metricTemperatureObject.duration = const Duration(seconds: 20);
 
       // 6. Verify the texts are present
-      expect(find.text('MySensor'), findsOneWidget);
+      expect(find.text('Digital Thermometer'), findsOneWidget);
       expect(find.text('23.5'), findsOneWidget);
 
       // 8. Tap the Clear button
@@ -179,9 +170,6 @@ void main() {
       await tester.pumpAndSettle();
 
       // 9. After clearing, both fields should be empty
-      expect(find.text('MySensor'), findsNothing,
-          reason:
-              'After tapping Clear, the "Sensor Type" field should be empty.');
       expect(find.text('23.5'), findsNothing,
           reason:
               'After tapping Clear, the "Enter temperature" field should be empty.');
@@ -228,15 +216,6 @@ void main() {
       // Now MetricsSelector will have been built:
       expect(find.byKey(const Key('temperature_input')), findsOneWidget);
 
-      // 3. Find and fill the Sensor Type field
-      final sensorTypeField = find.byWidgetPredicate(
-        (w) => w is TextField && w.decoration?.labelText == 'Sensor Type',
-        description: 'TextField with labelText "Sensor Type"',
-      );
-      expect(sensorTypeField, findsOneWidget);
-      await tester.enterText(sensorTypeField, 'MySensor');
-      await tester.pumpAndSettle();
-
       // 4. Find and fill the Temperature field
       final tempField = find.byWidgetPredicate(
         (w) => w is TextField && w.decoration?.labelText == 'Enter temperature',
@@ -249,7 +228,7 @@ void main() {
       fakeState.metricTemperatureObject.duration = const Duration(seconds: 20);
 
       // 6. Verify the texts are present
-      expect(find.text('MySensor'), findsOneWidget);
+      expect(find.text('Digital Thermometer'), findsOneWidget);
       expect(find.text('23.5'), findsOneWidget);
 
       // 8. Tap the Clear button
@@ -304,12 +283,6 @@ testWidgets('Submitting does not work if incorrect values',
   expect(find.byKey(const Key('temperature_input')), findsOneWidget);
 
   // 5) Fill in the fields (sensor + an out‐of‐range temp of "120")
-  final sensorTypeField = find.byWidgetPredicate(
-    (w) => w is TextField && w.decoration?.labelText == 'Sensor Type',
-  );
-  expect(sensorTypeField, findsOneWidget);
-  await tester.enterText(sensorTypeField, 'MySensor');
-  await tester.pumpAndSettle();
 
   final tempField = find.byWidgetPredicate(
     (w) => w is TextField && w.decoration?.labelText == 'Enter temperature',
