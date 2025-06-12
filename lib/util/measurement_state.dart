@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:http/http.dart' as client;
 import 'package:latlong2/latlong.dart';
 import 'package:waterwatch/util/metric_objects/temperature_object.dart';
 import 'package:http/http.dart' as http;
@@ -48,10 +49,15 @@ class MeasurementState {
     String url = "$apiUrl/api/measurements/";
     final uri = Uri.parse(url);
 
+    String token = await getCSRFToken();
+
     // Optional: set headers
     final headers = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
+      'Referer': 'https://waterwatch.tudelft.nl',
+      'X-CSRFToken': token,
+      'Cookie': 'csrftoken=$token',
     };
 
     final now = DateTime.now();
@@ -97,4 +103,26 @@ String formatDurationToMinSec(Duration duration) {
   final minutes = twoDigits(duration.inMinutes.remainder(60));
   final seconds = twoDigits(duration.inSeconds.remainder(60));
   return '$minutes:$seconds';
+}
+
+Future<String> getCSRFToken() async {
+  final uri = Uri.parse('https://waterwatch.tudelft.nl/api/session/');
+  final response = await client.get(uri, headers: {
+    'Accept': 'application/json',
+    'Referer': 'https://waterwatch.tudelft.nl',
+  });
+
+  final setCookie = response.headers['set-cookie'];
+  print(setCookie);
+  if (setCookie == null) {
+    throw Exception('Missing Set-Cookie header when fetching CSRF token');
+  }
+
+  final csrfPair = setCookie.split(';').firstWhere(
+        (segment) => segment.trim().startsWith('csrftoken='),
+        orElse: () => throw Exception('No csrftoken segment in: $setCookie'),
+      );
+  final token = csrfPair.split('=')[1];
+  print(token);
+  return token;
 }

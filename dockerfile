@@ -1,4 +1,4 @@
-FROM ghcr.io/cirruslabs/flutter:3.19.6
+FROM ghcr.io/cirruslabs/flutter:3.32.3
 
 # Set pub cache directory
 ENV PUB_CACHE=/deps/.pub_cache
