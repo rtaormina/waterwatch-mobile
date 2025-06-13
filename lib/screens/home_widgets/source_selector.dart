@@ -24,6 +24,7 @@ class _SourceSelectorState extends State<SourceSelector> {
             contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
           ),
           child: DropdownButton<String>(
+            hint: const Text('Select water source'), 
             underline: const SizedBox(),
             isExpanded: true,
             style: const TextStyle(
