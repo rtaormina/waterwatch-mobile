@@ -81,8 +81,9 @@ class _TemperatureInputState extends State<TemperatureInput> {
                   ),
                   keyboardType: TextInputType.number,
                   onChanged: (val) {
-                    state.metricTemperatureObject.temperature =
-                        double.tryParse(val) ?? 0.0;
+                    final normalized = val.replaceAll(',', '.');
+                    widget.measurementState.metricTemperatureObject
+                        .temperature = double.tryParse(normalized) ?? 0.0;
                   },
                 ),
               ),

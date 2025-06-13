@@ -19,6 +19,7 @@ Future<void> uploadStoredMeasurements() async {
   }
 
   for (var measurement in measurements) {
+    measurement['timestamp'] = DateTime.parse(measurement['timestamp']).toUtc().toIso8601String();
     //await uploadMeasurement(measurement);
   }
 }
