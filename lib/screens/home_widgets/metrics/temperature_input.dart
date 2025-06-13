@@ -144,9 +144,10 @@ class _TemperatureInputState extends State<TemperatureInput> {
           const SizedBox(height: 10),
           ElevatedButton(
             child: Text(
-              'Time Waited: '
+              'Time Waited \n'
               '${state.metricTemperatureObject.duration.inMinutes.remainder(60).toString().padLeft(2, '0')} minutes '
               '${state.metricTemperatureObject.duration.inSeconds.remainder(60).toString().padLeft(2, '0')} seconds',
+              textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 18),
             ),
             onPressed: () {
