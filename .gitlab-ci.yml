@@ -51,7 +51,7 @@ unit_and_widget_tests:
         - lib/**/*
   script:
     - flutter test --coverage
-    - lcov --remove coverage/lcov.info "*.g.dart" "*.part.dart" "*/generated/*" -o coverage/lcov.info
+    - lcov --ignore-errors unused --remove coverage/lcov.info "*.g.dart" "*.part.dart" "*/generated/*" -o coverage/lcov.info
     - genhtml -o coverage coverage/lcov.info
   coverage: '/lines\.*: \d+\.\d+\%/'
   artifacts:
