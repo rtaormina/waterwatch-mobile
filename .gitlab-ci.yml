@@ -3,6 +3,9 @@ workflow:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: always
 
+variables:
+  IMAGE_TAG: $CI_COMMIT_SHORT_SHA
+
 stages:
   - build_test_env
   - lint
@@ -21,14 +24,13 @@ build_mobile_image:
   # Log in to Docker registry and build the image
   script:
     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
-    - docker build -f dockerfile -t $CI_REGISTRY_IMAGE:mobile .
-    - docker push $CI_REGISTRY_IMAGE:mobile
+    - docker build -f dockerfile -t $CI_REGISTRY_IMAGE:$IMAGE_TAG .
+    - docker push $CI_REGISTRY_IMAGE:$IMAGE_TAG
 
 lint_app:
   stage: lint
   image:
-    name: $CI_REGISTRY_IMAGE:mobile
-    pull_policy: always
+    name: $CI_REGISTRY_IMAGE:$IMAGE_TAG
   variables:
     PUB_CACHE: /deps/.pub-cache
   rules:
@@ -41,7 +43,7 @@ lint_app:
 unit_and_widget_tests:
   stage: test
   image:
-    name: $CI_REGISTRY_IMAGE:mobile
+    name: $CI_REGISTRY_IMAGE:$IMAGE_TAG
     pull_policy: always
   variables:
     PUB_CACHE: /deps/.pub-cache
