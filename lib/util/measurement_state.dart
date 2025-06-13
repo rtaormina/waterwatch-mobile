@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:waterwatch/util/metric_objects/temperature_object.dart';
 import 'package:waterwatch/util/util_functions/format_date_time.dart';
@@ -8,8 +11,15 @@ import 'package:waterwatch/util/util_functions/upload_measurement.dart';
 class MeasurementState {
   bool testMode = false;
   //create a new instance of MeasurementState
-  static MeasurementState initializeState() {
-    return MeasurementState();
+  static MeasurementState initializeState(Future<bool> Function() onlineState) {
+    MeasurementState state = MeasurementState();
+    state.onlineState = onlineState;
+    try {
+      startMonitoring();
+    } catch (e) {
+      state.showError("Failed to start monitoring: $e");
+    }
+    return state;
   }
 
   //general measurement state
@@ -30,22 +40,24 @@ class MeasurementState {
   void Function() reloadHomePage = () {};
   void Function() reloadLocation = () {};
 
-  //clear out all values
   void clear() {
     waterSource = null;
     metricTemperatureObject.clear();
-    
   }
+
+  Future<bool> Function() onlineState = () async {
+    return false;
+  };
 
   void Function(String) showError = (e) {};
 
-  //validating all metrics
   bool validateMetrics() {
-    if(waterSource == null || waterSource!.isEmpty) {
+    if (waterSource == null || waterSource!.isEmpty) {
       showError("Please select a water source.");
       return false;
     }
-    if(metricTemperatureObject.sensorType == null || metricTemperatureObject.sensorType!.isEmpty) {
+    if (metricTemperatureObject.sensorType == null ||
+        metricTemperatureObject.sensorType!.isEmpty) {
       showError("Please enter a valid sensor type.");
       return false;
     }
@@ -53,8 +65,14 @@ class MeasurementState {
   }
 
   Future<void> sendData() async {
+    final now = DateTime.now();
+    final today = DateFormat('yyyy-MM-dd').format(now);
+    final time = DateFormat('HH:mm:ss').format(now);
 
     Map<String, dynamic> payload = {
+      "timestamp": DateTime.now().toUtc().toIso8601String(),
+      "local_date": today,
+      "local_time": time,
       'water_source': waterSource,
       'location': {
         'type': 'Point',
@@ -66,13 +84,17 @@ class MeasurementState {
       'temperature': {
         'value': metricTemperatureObject.temperature,
         'sensor': metricTemperatureObject.sensorType,
-        'time_waited':
-            formatDurationToMinSec(metricTemperatureObject.duration),
+        'time_waited': formatDurationToMinSec(metricTemperatureObject.duration),
       },
     };
 
-    if (await getOnline()) {
-      await uploadMeasurement(payload);
+    if (await onlineState()) {
+      try {
+        await uploadMeasurement(payload);
+      } catch (e) {
+        showError("Failed to upload measurement: $e");
+        await storeMeasurement(payload);
+      }
     } else {
       await storeMeasurement(payload);
     }

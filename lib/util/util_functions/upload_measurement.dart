@@ -1,12 +1,13 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'get_CSRF.dart';
+import 'get_csrf.dart';
 
 Future<void> uploadMeasurement(
   Map<String, dynamic> measurement,
 ) async {
-  String url = "https://waterwatch.tudelft.nl/api/measurements/";
+  
+    String url = "https://waterwatch.tudelft.nl/api/measurements/";
   final uri = Uri.parse(url);
 
   String token = await getCSRFToken();
@@ -25,9 +26,12 @@ Future<void> uploadMeasurement(
   final response = await http.post(uri, headers: headers, body: body);
 
   if (response.statusCode != 200 && response.statusCode != 201) {
+    
     throw http.ClientException(
       'Failed POST (${response.statusCode}): ${response.body}',
       uri,
     );
   }
+  
+  
 }
