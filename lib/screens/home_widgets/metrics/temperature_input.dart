@@ -30,6 +30,7 @@ class _TemperatureInputState extends State<TemperatureInput> {
               contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
             ),
             child: DropdownButton<String>(
+              hint: const Text('Select thermometer type'), 
               underline: const SizedBox(),
               isExpanded: true,
               style: const TextStyle(

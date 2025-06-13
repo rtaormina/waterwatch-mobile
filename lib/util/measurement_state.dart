@@ -14,7 +14,7 @@ class MeasurementState {
   }
 
   //general measurement state
-  String waterSource = 'network';
+  String? waterSource;
   LatLng? location;
   LatLng? currentLocation;
   String? locationError;
@@ -33,11 +33,21 @@ class MeasurementState {
 
   //clear out all values
   void clear() {
+    waterSource = null;
     metricTemperatureObject.clear();
+    
   }
 
   //validating all metrics
   bool validateMetrics() {
+    if(waterSource == null || waterSource!.isEmpty) {
+      showError("Please select a water source.");
+      return false;
+    }
+    if(metricTemperatureObject.sensorType == null || metricTemperatureObject.sensorType!.isEmpty) {
+      showError("Please enter a valid sensor type.");
+      return false;
+    }
     return metricTemperatureObject.validate();
   }
 
