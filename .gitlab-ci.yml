@@ -3,6 +3,9 @@ workflow:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: always
 
+variables:
+  IMAGE_TAG: $CI_COMMIT_SHORT_SHA
+
 stages:
   - build_test_env
   - lint
@@ -21,12 +24,13 @@ build_mobile_image:
   # Log in to Docker registry and build the image
   script:
     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
-    - docker build -f dockerfile -t $CI_REGISTRY_IMAGE:mobile .
-    - docker push $CI_REGISTRY_IMAGE:mobile
+    - docker build -f dockerfile -t $CI_REGISTRY_IMAGE:$IMAGE_TAG .
+    - docker push $CI_REGISTRY_IMAGE:$IMAGE_TAG
 
 lint_app:
   stage: lint
-  image: $CI_REGISTRY_IMAGE:mobile
+  image:
+    name: $CI_REGISTRY_IMAGE:$IMAGE_TAG
   variables:
     PUB_CACHE: /deps/.pub-cache
   rules:
@@ -38,7 +42,8 @@ lint_app:
 # Decided to keep them together for now to get full coverage
 unit_and_widget_tests:
   stage: test
-  image: $CI_REGISTRY_IMAGE:mobile
+  image:
+    name: $CI_REGISTRY_IMAGE:$IMAGE_TAG
   variables:
     PUB_CACHE: /deps/.pub-cache
   rules:
@@ -46,7 +51,7 @@ unit_and_widget_tests:
         - lib/**/*
   script:
     - flutter test --coverage
-    - lcov --remove coverage/lcov.info "*.g.dart" "*.part.dart" "*/generated/*" -o coverage/lcov.info
+    - lcov --ignore-errors unused --remove coverage/lcov.info "*.g.dart" "*.part.dart" "*/generated/*" -o coverage/lcov.info
     - genhtml -o coverage coverage/lcov.info
   coverage: '/lines\.*: \d+\.\d+\%/'
   artifacts:

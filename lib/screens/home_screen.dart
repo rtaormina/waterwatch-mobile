@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:waterwatch/screens/home_widgets/buttons/clear_button.dart';
 import 'package:waterwatch/screens/home_widgets/location_selector.dart';
 import 'package:waterwatch/screens/home_widgets/metrics/temperature_input.dart';
-import 'package:waterwatch/screens/home_widgets/metrics_selector.dart';
 import 'package:waterwatch/screens/home_widgets/buttons/submit_button.dart';
+import 'package:waterwatch/screens/home_widgets/metrics_selector.dart';
 import 'package:waterwatch/screens/home_widgets/source_selector.dart';
 import 'package:waterwatch/theme.dart';
 import 'package:waterwatch/util/measurement_state.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.measurementState});
+  const HomeScreen(
+      {super.key, required this.measurementState, required this.getLocation});
 
   final MeasurementState measurementState;
+  final Future<void> Function(MeasurementState) getLocation;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -24,6 +26,24 @@ class _HomeScreenState extends State<HomeScreen> {
     widget.measurementState.reloadHomePage = () {
       setState(() {});
     };
+
+    widget.measurementState.showError = (String e) {
+      showDialog(context: context, builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Error"),
+          content: Text(e),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("OK"),
+            ),
+          ],
+        );
+      });
+    };
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -37,39 +57,58 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Colors.white, fontWeight: FontWeight.w500, fontSize: 30),
           ),
         ),
-        body: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Expanded(
-              child: ListView(
-                children: [
-                  const LocationSelector(),
-                  SourceSelector(
-                    measurementState: widget.measurementState,
+        body: Stack(children: [
+          widget.measurementState.showLoading
+              ? Container(
+                  color: const Color.fromARGB(68, 255, 255, 255),
+                  child: const Center(
+                    child: CircularProgressIndicator(),
                   ),
-                  MetricsSelector(
-                    measurementState: widget.measurementState,
-                  ),
-                  widget.measurementState.metricTemperature
-                      ? TemperatureInput(
-                          measurementState: widget.measurementState,
-                        )
-                      : const SizedBox(),
-                  const SizedBox(height: 10),
-                ],
-              ),
-            ),
-            keyboardOpen
-                ? const SizedBox()
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      const ClearButton(),
-                      SubmitButton(measurementState: widget.measurementState)
-                    ],
-                  )
-          ],
-        ),
+                )
+              : Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Expanded(
+                      child: ListView(
+                        key: const Key('home_list'),
+                        shrinkWrap: true,
+                        children: [
+                          LocationSelector(
+                            measurementState: widget.measurementState,
+                            getLocation: widget.getLocation,
+                          ),
+                          SourceSelector(
+                            measurementState: widget.measurementState,
+                          ),
+                          MetricsSelector(
+                            measurementState: widget.measurementState,
+                            key: const Key('metrics_selector'),
+                          ),
+                          widget.measurementState.metricTemperature
+                              ? TemperatureInput(
+                                  key: const Key("temperature_input"),
+                                  measurementState: widget.measurementState,
+                                )
+                              : const SizedBox(),
+                          const SizedBox(height: 10),
+                        ],
+                      ),
+                    ),
+                    keyboardOpen
+                        ? const SizedBox()
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              ClearButton(
+                                measurementState: widget.measurementState,
+                              ),
+                              SubmitButton(
+                                  measurementState: widget.measurementState)
+                            ],
+                          )
+                  ],
+                ),
+        ]),
       ),
     );
   }

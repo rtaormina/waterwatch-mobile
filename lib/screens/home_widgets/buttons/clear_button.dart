@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:waterwatch/theme.dart';
+import 'package:waterwatch/util/measurement_state.dart';
 
 class ClearButton extends StatelessWidget {
-  const ClearButton({super.key});
+  const ClearButton({super.key, required this.measurementState});
+
+  final MeasurementState measurementState;
 
   @override
   Widget build(BuildContext context) {
@@ -10,7 +13,10 @@ class ClearButton extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              measurementState.clear();
+              measurementState.reloadHomePage();
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.white,
               elevation: 0.0,

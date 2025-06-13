@@ -1,7 +1,9 @@
 abstract class MetricObject {
   MetricType type = MetricType.unknown;
 
-  void validate();
+  bool validate();
+
+  void clear();
 }
 
 enum MetricType {

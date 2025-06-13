@@ -15,7 +15,7 @@ class _SourceSelectorState extends State<SourceSelector> {
   @override
   Widget build(BuildContext context) {
     return CardComponent(
-        title: "Water source",
+        title: "Water Source",
         child: InputDecorator(
           decoration: const InputDecoration(
             fillColor: Colors.white,
@@ -24,6 +24,7 @@ class _SourceSelectorState extends State<SourceSelector> {
             contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
           ),
           child: DropdownButton<String>(
+            hint: const Text('Select water source'), 
             underline: const SizedBox(),
             isExpanded: true,
             style: const TextStyle(
@@ -32,7 +33,7 @@ class _SourceSelectorState extends State<SourceSelector> {
             ),
             dropdownColor: Colors.white,
             value: widget.measurementState.waterSource,
-            items: <String>['River', 'Lake', 'Well', 'Tap Water']
+            items: <String>['network', 'rooftop tank', 'well', 'other']
                 .map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
                 value: value,
@@ -45,6 +46,6 @@ class _SourceSelectorState extends State<SourceSelector> {
               });
             },
           ),
-        ));
+        ),);
   }
 }
