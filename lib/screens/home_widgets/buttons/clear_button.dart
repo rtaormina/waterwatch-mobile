@@ -15,6 +15,7 @@ class ClearButton extends StatelessWidget {
         child: ElevatedButton(
             onPressed: () {
               measurementState.clear();
+              measurementState.reloadHomePage();
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.white,

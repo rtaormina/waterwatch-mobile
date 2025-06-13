@@ -24,7 +24,26 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final bool keyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
     widget.measurementState.reloadHomePage = () {
-      setState(() {});    };
+      setState(() {});
+    };
+
+    widget.measurementState.showError = (String e) {
+      showDialog(context: context, builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Error"),
+          content: Text(e),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("OK"),
+            ),
+          ],
+        );
+      });
+    };
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,

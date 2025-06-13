@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:waterwatch/util/metric_objects/metric_object.dart';
 
 class TemperatureObject extends MetricObject {
-  String sensorType = "Digital Thermometer";
+  String? sensorType;
   double temperature = -1;
   Duration duration = Duration.zero;
   bool tempUnitCelsius = true;
@@ -17,7 +17,7 @@ class TemperatureObject extends MetricObject {
 
   @override
   void clear() {
-    sensorType = "Digital Thermometer";
+    sensorType = null;
     temperature = -1;
     duration = Duration.zero;
     tempUnitCelsius = true;
@@ -39,7 +39,7 @@ class TemperatureObject extends MetricObject {
   }
 
   bool sensorTypeValid() {
-    sensorTypeError = sensorType.isEmpty;
+    sensorTypeError = sensorType == null || sensorType!.isEmpty;
     return !sensorTypeError;
   }
 

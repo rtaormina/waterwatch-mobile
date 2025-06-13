@@ -30,6 +30,7 @@ class _TemperatureInputState extends State<TemperatureInput> {
               contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
             ),
             child: DropdownButton<String>(
+              hint: const Text('Select thermometer type'), 
               underline: const SizedBox(),
               isExpanded: true,
               style: const TextStyle(
@@ -80,8 +81,9 @@ class _TemperatureInputState extends State<TemperatureInput> {
                   ),
                   keyboardType: TextInputType.number,
                   onChanged: (val) {
-                    state.metricTemperatureObject.temperature =
-                        double.tryParse(val) ?? 0.0;
+                    final normalized = val.replaceAll(',', '.');
+                    widget.measurementState.metricTemperatureObject
+                        .temperature = double.tryParse(normalized) ?? 0.0;
                   },
                 ),
               ),
@@ -144,9 +146,10 @@ class _TemperatureInputState extends State<TemperatureInput> {
           const SizedBox(height: 10),
           ElevatedButton(
             child: Text(
-              'Time Waited: '
+              'Time Waited \n'
               '${state.metricTemperatureObject.duration.inMinutes.remainder(60).toString().padLeft(2, '0')} minutes '
               '${state.metricTemperatureObject.duration.inSeconds.remainder(60).toString().padLeft(2, '0')} seconds',
+              textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 18),
             ),
             onPressed: () {

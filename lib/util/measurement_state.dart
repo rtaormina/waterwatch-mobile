@@ -1,10 +1,6 @@
-import 'dart:convert';
-
 import 'package:http/http.dart' as client;
 import 'package:latlong2/latlong.dart';
 import 'package:waterwatch/util/metric_objects/temperature_object.dart';
-import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 import 'package:waterwatch/util/util_functions/is_online.dart';
 import 'package:waterwatch/util/util_functions/store_measurement.dart';
 import 'package:waterwatch/util/util_functions/upload_measurement.dart';
@@ -17,7 +13,7 @@ class MeasurementState {
   }
 
   //general measurement state
-  String waterSource = 'network';
+  String? waterSource;
   LatLng? location;
   LatLng? currentLocation;
   String? locationError;
@@ -36,11 +32,23 @@ class MeasurementState {
 
   //clear out all values
   void clear() {
+    waterSource = null;
     metricTemperatureObject.clear();
+    
   }
+
+  void Function(String) showError = (e) {};
 
   //validating all metrics
   bool validateMetrics() {
+    if(waterSource == null || waterSource!.isEmpty) {
+      showError("Please select a water source.");
+      return false;
+    }
+    if(metricTemperatureObject.sensorType == null || metricTemperatureObject.sensorType!.isEmpty) {
+      showError("Please enter a valid sensor type.");
+      return false;
+    }
     return metricTemperatureObject.validate();
   }
 
