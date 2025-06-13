@@ -44,7 +44,6 @@ unit_and_widget_tests:
   stage: test
   image:
     name: $CI_REGISTRY_IMAGE:$IMAGE_TAG
-    pull_policy: always
   variables:
     PUB_CACHE: /deps/.pub-cache
   rules:
