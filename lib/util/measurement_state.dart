@@ -6,6 +6,7 @@ import 'package:waterwatch/util/metric_objects/temperature_object.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:waterwatch/util/util_functions/is_online.dart';
+import 'package:waterwatch/util/util_functions/store_measurement.dart';
 import 'package:waterwatch/util/util_functions/upload_measurement.dart';
 
 class MeasurementState {
@@ -44,14 +45,28 @@ class MeasurementState {
   }
 
   Future<void> sendData() async {
-    String apiUrl = "https://waterwatch.tudelft.nl";
 
-    //check if online
+    Map<String, dynamic> payload = {
+      'water_source': waterSource,
+      'location': {
+        'type': 'Point',
+        'coordinates': [
+          location!.longitude,
+          location!.latitude,
+        ],
+      },
+      'temperature': {
+        'value': metricTemperatureObject.temperature,
+        'sensor': metricTemperatureObject.sensorType,
+        'time_waited':
+            formatDurationToMinSec(metricTemperatureObject.duration),
+      },
+    };
+
     if (await getOnline()) {
-      await uploadMeasurement(apiUrl, location, waterSource,
-          metricTemperatureObject);
+      await uploadMeasurement(payload);
     } else {
-      await 
+      await storeMeasurement(payload);
     }
   }
 }
