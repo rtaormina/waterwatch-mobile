@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:waterwatch/util/measurement_state.dart';
+import 'get_CSRF.dart';
 
 Future<void> uploadMeasurement(
   Map<String, dynamic> measurement,
