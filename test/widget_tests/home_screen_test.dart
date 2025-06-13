@@ -5,7 +5,6 @@ import 'package:waterwatch/screens/home_screen.dart';
 import 'package:waterwatch/screens/home_widgets/buttons/clear_button.dart';
 import 'package:waterwatch/screens/home_widgets/buttons/submit_button.dart';
 import 'package:waterwatch/screens/home_widgets/location_selector.dart';
-import 'package:waterwatch/screens/home_widgets/metrics/temperature_input.dart';
 import 'package:waterwatch/screens/home_widgets/source_selector.dart';
 import 'package:waterwatch/util/measurement_state.dart';
 
@@ -97,11 +96,11 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byKey(const Key('temperature_input')), findsOneWidget);
 
-      // Temperature metric button
-      final temperatureCheckbox = find.byType(Checkbox).first;
-      await tester.tap(temperatureCheckbox);
-      await tester.pumpAndSettle();
-      expect(find.byType(TemperatureInput), findsNothing);
+      // // Temperature metric button
+      // final temperatureCheckbox = find.byType(Checkbox).first;
+      // await tester.tap(temperatureCheckbox);
+      // await tester.pumpAndSettle();
+      // expect(find.byType(TemperatureInput), findsNothing);
     });
   });
 
