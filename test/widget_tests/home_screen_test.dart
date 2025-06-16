@@ -48,10 +48,14 @@ class InvalidFakeMeasurementState extends FakeMeasurementState {
 }
 
 void main() {
+  Future<bool> mockOnlineState() async {
+    return false; // Simulate offline state
+  }
   group('HomeScreen', () {
+    
     testWidgets('Homescreen loads and temperature metric selection works',
         (WidgetTester tester) async {
-      MeasurementState state = MeasurementState.initializeState();
+      MeasurementState state = MeasurementState.initializeState(mockOnlineState);
       state.testMode = true;
 
       //custom location function
@@ -106,7 +110,7 @@ void main() {
 
   group('TemperatureInput + Submit/Clear behavior', () {
     testWidgets('Clearing works', (WidgetTester tester) async {
-      MeasurementState state = MeasurementState.initializeState();
+      MeasurementState state = MeasurementState.initializeState(mockOnlineState);
       state.testMode = true;
 
       //custom location function

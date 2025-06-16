@@ -8,6 +8,7 @@ const _kMeasurementsKey = 'stored_measurements';
 Future<List<Map<String, dynamic>>> retrieveStoredMeasurements() async {
   final prefs = await SharedPreferences.getInstance();
   final rawList = prefs.getStringList(_kMeasurementsKey) ?? <String>[];
+  await prefs.setStringList(_kMeasurementsKey, []);
   return rawList
       .map((jsonStr) => jsonDecode(jsonStr) as Map<String, dynamic>)
       .toList();
