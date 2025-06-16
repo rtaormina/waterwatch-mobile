@@ -4,14 +4,13 @@ import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:waterwatch/util/metric_objects/temperature_object.dart';
 import 'package:waterwatch/util/util_functions/format_date_time.dart';
-import 'package:waterwatch/util/util_functions/is_online.dart';
 import 'package:waterwatch/util/util_functions/store_measurement.dart';
 import 'package:waterwatch/util/util_functions/upload_measurement.dart';
 
 class MeasurementState {
   bool testMode = false;
   //create a new instance of MeasurementState
-  static MeasurementState initializeState(Future<bool> Function() onlineState) {
+  static MeasurementState initializeState(Future<bool> Function() onlineState, void Function() startMonitoring) {
     MeasurementState state = MeasurementState();
     state.onlineState = onlineState;
     try {
@@ -65,6 +64,24 @@ class MeasurementState {
   }
 
   Future<void> sendData() async {
+
+    Map<String, dynamic> payload = getPayload();
+    
+
+    if (await onlineState()) {
+      try {
+        await uploadMeasurement(payload);
+      } catch (e) {
+        showError("Failed to upload measurement: $e");
+        await storeMeasurement(payload);
+      }
+    } else {
+      await storeMeasurement(payload);
+    }
+  }
+
+  Map<String, dynamic> getPayload() {
+
     final now = DateTime.now();
     final today = DateFormat('yyyy-MM-dd').format(now);
     final time = DateFormat('HH:mm:ss').format(now);
@@ -87,16 +104,8 @@ class MeasurementState {
         'time_waited': formatDurationToMinSec(metricTemperatureObject.duration),
       },
     };
-
-    if (await onlineState()) {
-      try {
-        await uploadMeasurement(payload);
-      } catch (e) {
-        showError("Failed to upload measurement: $e");
-        await storeMeasurement(payload);
-      }
-    } else {
-      await storeMeasurement(payload);
-    }
+    return payload;
   }
+
+  
 }

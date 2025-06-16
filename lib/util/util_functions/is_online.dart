@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:waterwatch/util/util_functions/download_map.dart';
 import 'package:waterwatch/util/util_functions/upload_stored_measurements.dart';
 
 Future<bool> getOnline() async {
@@ -22,10 +24,16 @@ void startMonitoring() {
 }
 
 Future<void> _doUpdate() async {
+
   try {
     final online = await getOnline();
     if (online) {
       await uploadStoredMeasurements();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      if(!prefs.containsKey('saved_map')) {
+        await prefs.setBool('saved_map', true);
+        await preloadRegion();
+      }
     }
   } catch (e) {
     throw Exception(

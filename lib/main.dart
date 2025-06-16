@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
 import 'package:waterwatch/screens/home_screen.dart';
 import 'package:waterwatch/util/measurement_state.dart';
 import 'package:waterwatch/util/util_functions/get_location.dart';
@@ -6,6 +7,11 @@ import 'package:waterwatch/util/util_functions/is_online.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Initialize the backend database for caching tiles
+  await FMTCObjectBoxBackend().initialise();
+
+  // Create a named store (cache container)
+  await FMTCStore('mapStore').manage.create();
   runApp(
     MaterialApp(
       theme: ThemeData(
@@ -33,7 +39,7 @@ void main() async {
         ),
       ),
       home: HomeScreen(
-        measurementState: MeasurementState.initializeState(getOnline),
+        measurementState: MeasurementState.initializeState(getOnline, startMonitoring),
         getLocation: fetchDeviceLocation,
       ),
     ),
