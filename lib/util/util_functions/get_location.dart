@@ -59,6 +59,5 @@ Future<void> getLocation(MeasurementState measurementState) async {
     measurementState.reloadLocation();
   } catch (e) {
     measurementState.locationError = 'Error obtaining location: $e';
-    //measurementState.reloadLocation();
   }
 }

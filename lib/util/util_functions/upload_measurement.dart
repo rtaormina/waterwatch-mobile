@@ -7,12 +7,11 @@ Future<void> uploadMeasurement(
   Map<String, dynamic> measurement,
 ) async {
   
-    String url = "https://waterwatch.tudelft.nl/api/measurements/";
-  final uri = Uri.parse(url);
+    
+  final uri = Uri.parse("https://waterwatch.tudelft.nl/api/measurements/");
 
   String token = await getCSRFToken();
 
-  // Optional: set headers
   final headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
