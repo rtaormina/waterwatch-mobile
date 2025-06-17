@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'get_csrf.dart';
+import 'get_csrf_token.dart';
 
 Future<void> uploadMeasurement(
   Map<String, dynamic> measurement,

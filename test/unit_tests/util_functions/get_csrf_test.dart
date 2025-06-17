@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as client;
 import 'package:http/testing.dart';
-import 'package:waterwatch/util/util_functions/get_csrf.dart';
+import 'package:waterwatch/util/util_functions/get_csrf_token.dart';
 
 void main() {
   test('getCSRFToken sends correct headers and parses the token', () async {
