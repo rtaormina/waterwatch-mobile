@@ -94,15 +94,9 @@ void main() {
 
       await Future.delayed(const Duration(seconds: 2));
 
-      final listFinder = find.byKey(const Key('home_list')); 
-    
       await tester.flingFrom(Offset(200, 500), const Offset(0, -200), 1000);
 
-
       await Future.delayed(const Duration(seconds: 2));
-
-     
-
 
       var tempInput = find.byKey(const Key('temperature_input'));
       var submitButton = find.byType(SubmitButton);
