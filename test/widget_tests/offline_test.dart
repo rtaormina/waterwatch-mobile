@@ -13,20 +13,18 @@ void main() {
     return online; // Simulate offline state
   }
 
-  group('Offline adding to cache and updating when back online', () {
+  group('Offline adding to cache', () {
     testWidgets("should store when not online", (WidgetTester tester) async {
       bool measurementStored = false;
+      bool measurementSent = false;
       MeasurementState mockMeasurementState =
-          MeasurementState.initializeState(mockOnlineState, () {}, (payload) async {measurementStored = true;});
-      Future<void> mockGetLocation(MeasurementState state) async {
-        state.currentLocation = const LatLng(1, 1);
-        state.reloadLocation();
-      }
+          MeasurementState.initializeState(mockOnlineState, () {}, (payload) async {measurementStored = true;}, (payload) async {measurementSent = true;});
+      mockMeasurementState.testMode = true;
 
       final myWidget = MaterialApp(
         home: HomeScreen(
           measurementState: mockMeasurementState,
-          getLocation: mockGetLocation,
+          getLocation: (MeasurementState state) async {},
         ),
       );
 
@@ -55,7 +53,6 @@ void main() {
           const Duration(seconds: 20);
 
       await tester.enterText(tempField, '23.5');
-      await tester.pumpAndSettle();
 
       await tester.tap(submitButton);
       await tester.pumpAndSettle();
@@ -65,6 +62,7 @@ void main() {
       expect(find.text('23.5', skipOffstage: false), findsNothing);
 
       expect(measurementStored, isTrue);
+      expect(measurementSent, isFalse); 
     });
   });
 }

@@ -5,6 +5,7 @@ import 'package:waterwatch/util/measurement_state.dart';
 import 'package:waterwatch/util/util_functions/get_location.dart';
 import 'package:waterwatch/util/util_functions/is_online.dart';
 import 'package:waterwatch/util/util_functions/store_measurement.dart';
+import 'package:waterwatch/util/util_functions/upload_measurement.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,7 +41,7 @@ void main() async {
         ),
       ),
       home: HomeScreen(
-        measurementState: MeasurementState.initializeState(getOnline, startMonitoring, storeMeasurement),
+        measurementState: MeasurementState.initializeState(getOnline, startMonitoring, storeMeasurement, uploadMeasurement),
         getLocation: fetchDeviceLocation,
       ),
     ),
