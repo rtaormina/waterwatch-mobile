@@ -91,7 +91,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                 )
                               : const SizedBox(),
                           const SizedBox(height: 10),
-                          Text("hey")
                         ],
                       ),
                     ),

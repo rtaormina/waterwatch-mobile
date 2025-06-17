@@ -18,7 +18,7 @@ void main() {
     setUp(() {
       // Create a mock measurement state with default values
       mockGetOnline = () async => false; // Mock online state
-      mockMeasurementState = MeasurementState.initializeState(mockGetOnline, () {});
+      mockMeasurementState = MeasurementState.initializeState(mockGetOnline, () {}, (payload) async {});
       mockGetLocation = (MeasurementState state) async {
         // Mock implementation
       };

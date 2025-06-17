@@ -4,13 +4,12 @@ import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:waterwatch/util/metric_objects/temperature_object.dart';
 import 'package:waterwatch/util/util_functions/format_date_time.dart';
-import 'package:waterwatch/util/util_functions/store_measurement.dart';
 import 'package:waterwatch/util/util_functions/upload_measurement.dart';
 
 class MeasurementState {
   bool testMode = false;
   //create a new instance of MeasurementState
-  static MeasurementState initializeState(Future<bool> Function() onlineState, void Function() startMonitoring) {
+  static MeasurementState initializeState(Future<bool> Function() onlineState, void Function() startMonitoring, Future<void> Function(Map<String, dynamic>) storeMeasurement) {
     MeasurementState state = MeasurementState();
     state.onlineState = onlineState;
     try {
@@ -48,11 +47,17 @@ class MeasurementState {
     return false;
   };
 
+  Future<void> Function(Map<String, dynamic>) storeMeasurement = (payload) async {};
+
   void Function(String) showError = (e) {};
 
   bool validateMetrics() {
     if (waterSource == null || waterSource!.isEmpty) {
       showError("Please select a water source.");
+      return false;
+    }
+    if( location == null) {
+      showError("Please select a valid location.");
       return false;
     }
     if (metricTemperatureObject.sensorType == null ||
