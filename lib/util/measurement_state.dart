@@ -1,16 +1,32 @@
-import 'dart:convert';
+import 'dart:async';
 
-import 'package:http/http.dart' as client;
+import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:waterwatch/util/metric_objects/temperature_object.dart';
-import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
+import 'package:waterwatch/util/util_functions/format_date_time.dart';
 
 class MeasurementState {
+
+  //flag for disabling map in tests
   bool testMode = false;
+  
   //create a new instance of MeasurementState
-  static MeasurementState initializeState() {
-    return MeasurementState();
+  static MeasurementState initializeState(
+    Future<bool> Function() onlineState,
+    void Function() startMonitoring,
+    Future<void> Function(Map<String, dynamic>) storeMeasurement,
+    Future<void> Function(Map<String, dynamic>) uploadMeasurement,
+  ) {
+    MeasurementState state = MeasurementState();
+    state.onlineState = onlineState;
+    state.storeMeasurement = storeMeasurement;
+    state.uploadMeasurement = uploadMeasurement;
+    try {
+      startMonitoring();
+    } catch (e) {
+      state.showError("Failed to start monitoring: $e");
+    }
+    return state;
   }
 
   //general measurement state
@@ -25,126 +41,91 @@ class MeasurementState {
   bool metricTemperature = true;
   TemperatureObject metricTemperatureObject = TemperatureObject();
 
+  //turns to true when app is uploading data
   bool showLoading = false;
 
   //reload function for home page
   void Function() reloadHomePage = () {};
   void Function() reloadLocation = () {};
 
-  //clear out all values
+  //clearing all the fields of the measurement
   void clear() {
     waterSource = null;
     metricTemperatureObject.clear();
-    
   }
 
-  //validating all metrics
+  //injected function for online state checking
+  Future<bool> Function() onlineState = () async {
+    return false;
+  };
+
+  //injected functions for storing and uploading measurements
+  Future<void> Function(Map<String, dynamic>) storeMeasurement =
+      (payload) async {};
+  Future<void> Function(Map<String, dynamic>) uploadMeasurement =
+      (payload) async {};
+
+  //set in homescreen widget to show error messages
+  void Function(String) showError = (e) {};
+
+  //validating the metrics before sending
   bool validateMetrics() {
-    if(waterSource == null || waterSource!.isEmpty) {
+    if (waterSource == null || waterSource!.isEmpty) {
       showError("Please select a water source.");
       return false;
     }
-    if(metricTemperatureObject.sensorType == null || metricTemperatureObject.sensorType!.isEmpty) {
+    if (location == null) {
+      showError("Please select a valid location.");
+      return false;
+    }
+    if (metricTemperatureObject.sensorType == null ||
+        metricTemperatureObject.sensorType!.isEmpty) {
       showError("Please enter a valid sensor type.");
       return false;
     }
     return metricTemperatureObject.validate();
   }
 
-  void Function(String) showError = (e) {};
+  //fires when the submit button is pressed
+  Future<void> sendData() async {
+    Map<String, dynamic> payload = getPayload();
 
-  Future<Map<String, dynamic>> sendData() async {
-    try {
-      String apiUrl = "https://waterwatch.tudelft.nl";
-      //check if online
-
-      //online
-      String url = "$apiUrl/api/measurements/";
-      final uri = Uri.parse(url);
-
-      String token = await getCSRFToken();
-
-      // Optional: set headers
-      final headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Referer': 'https://waterwatch.tudelft.nl',
-        'X-CSRFToken': token,
-        'Cookie': 'csrftoken=$token',
-      };
-
-      final now = DateTime.now();
-      final today = DateFormat('yyyy-MM-dd').format(now);
-      final time = DateFormat('HH:mm:ss').format(now);
-
-      // Encode your payload as JSON
-      final body = jsonEncode({
-        "timestamp": DateTime.now().toUtc().toIso8601String(),
-        "local_date": today,
-        "local_time": time,
-        "location": {
-          "type": "Point",
-          "coordinates": [location!.longitude, location!.latitude]
-        },
-        "water_source": waterSource,
-        "temperature": {
-          "value": metricTemperatureObject.temperature,
-          "sensor": metricTemperatureObject.sensorType,
-          "time_waited":
-              formatDurationToMinSec(metricTemperatureObject.duration)
-        }
-      });
-
-      // Send the POST
-      final response = await http.post(uri, headers: headers, body: body);
-
-      // Check status code
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        return jsonDecode(response.body) as Map<String, dynamic>;
-      } else {
-        throw http.ClientException(
-          'Failed POST (${response.statusCode}): ${response.body}',
-          uri,
-        );
+    if (await onlineState()) {
+      try {
+        await uploadMeasurement(payload);
+      } catch (e) {
+        showError("Failed to upload measurement: $e");
+        await storeMeasurement(payload);
       }
-    } catch (e) {
-      // Handle offline or other errors
-      showError(e.toString());
-      return {
-        'error':
-            'Failed to send data. Please check your connection or try again later.'
-      };
+    } else {
+      await storeMeasurement(payload);
     }
-
-    //offline
-  }
-}
-
-String formatDurationToMinSec(Duration duration) {
-  String twoDigits(int n) => n.toString().padLeft(2, '0');
-  final minutes = twoDigits(duration.inMinutes.remainder(60));
-  final seconds = twoDigits(duration.inSeconds.remainder(60));
-  return '$minutes:$seconds';
-}
-
-Future<String> getCSRFToken() async {
-  final uri = Uri.parse('https://waterwatch.tudelft.nl/api/session/');
-  final response = await client.get(uri, headers: {
-    'Accept': 'application/json',
-    'Referer': 'https://waterwatch.tudelft.nl',
-  });
-
-  final setCookie = response.headers['set-cookie'];
-
-  if (setCookie == null) {
-    throw Exception('Missing Set-Cookie header when fetching CSRF token');
   }
 
-  final csrfPair = setCookie.split(';').firstWhere(
-        (segment) => segment.trim().startsWith('csrftoken='),
-        orElse: () => throw Exception('No csrftoken segment in: $setCookie'),
-      );
-  final token = csrfPair.split('=')[1];
+  //creates payload for the measurement that needs to be uploaded or stored
+  Map<String, dynamic> getPayload() {
+    final now = DateTime.now();
+    final today = DateFormat('yyyy-MM-dd').format(now);
+    final time = DateFormat('HH:mm:ss').format(now);
 
-  return token;
+    Map<String, dynamic> payload = {
+      "timestamp": DateTime.now().toUtc().toIso8601String(),
+      "local_date": today,
+      "local_time": time,
+      'water_source': waterSource,
+      'location': {
+        'type': 'Point',
+        'coordinates': [
+          location!.longitude,
+          location!.latitude,
+        ],
+      },
+      'temperature': {
+        'value': metricTemperatureObject.temperature,
+        'sensor': metricTemperatureObject.sensorType,
+        'time_waited': formatDurationToMinSec(metricTemperatureObject.duration),
+      },
+    };
+    return payload;
+  }
 }

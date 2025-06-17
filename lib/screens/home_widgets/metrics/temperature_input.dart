@@ -213,7 +213,6 @@ class _TemperatureInputState extends State<TemperatureInput> {
                   style: TextStyle(color: Colors.red),
                 )
               : const SizedBox()
-          //MinuteSecondPicker(onDurationChanged: (d) {})
         ],
       ),
     );

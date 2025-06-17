@@ -43,7 +43,7 @@ class PermissionDeniedException implements Exception {
   String toString() => 'PermissionDeniedException: $message';
 }
 
-Future<void> fetchDeviceLocation(MeasurementState measurementState) async {
+Future<void> getLocation(MeasurementState measurementState) async {
   try {
     final pos = await determinePosition();
     final deviceLatLng = LatLng(pos.latitude, pos.longitude);
@@ -59,6 +59,5 @@ Future<void> fetchDeviceLocation(MeasurementState measurementState) async {
     measurementState.reloadLocation();
   } catch (e) {
     measurementState.locationError = 'Error obtaining location: $e';
-    measurementState.reloadLocation();
   }
 }

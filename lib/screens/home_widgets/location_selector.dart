@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:waterwatch/components/card_component.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
 import 'package:waterwatch/theme.dart';
 import 'package:waterwatch/util/measurement_state.dart';
 
 class LocationSelector extends StatefulWidget {
-  const LocationSelector({super.key, required this.measurementState, required this.getLocation});
+  const LocationSelector({
+    super.key,
+    required this.measurementState,
+    required this.getLocation,
+  });
 
   final MeasurementState measurementState;
   final Future<void> Function(MeasurementState) getLocation;
@@ -15,39 +20,49 @@ class LocationSelector extends StatefulWidget {
 }
 
 class _LocationSelectorState extends State<LocationSelector> {
+
+  late final TileProvider _tileProvider;
+
   @override
   void initState() {
     super.initState();
-    widget.getLocation(widget.measurementState);
+
+    if(!widget.measurementState.testMode) {
+      _tileProvider = FMTCTileProvider(
+        stores: {'mapStore': BrowseStoreStrategy.readUpdateCreate},
+      );
+      widget.getLocation(widget.measurementState);
+    }
+    
   }
 
   @override
   Widget build(BuildContext context) {
-    MeasurementState measurementState = widget.measurementState;
-    measurementState.reloadLocation = () {
-      setState(() {});
-    };
+    final measurementState = widget.measurementState;
+    measurementState.reloadLocation = () => setState(() {});
+
     return CardComponent(
       title: "Measurement",
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // 1) Fixed-height container so the card never “jumps” size.
           SizedBox(
             height: 300,
             width: double.infinity,
             child: Stack(
               children: [
-                // If still loading (no location & no error), show a spinner.
+                if(measurementState.testMode)
+                  const Center(
+                    child: Text(
+                      'Test Mode: Location not available',
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                    ),
+                  ),
                 if (measurementState.currentLocation == null &&
                     measurementState.locationError == null)
                   const Center(child: CircularProgressIndicator()),
-
-                // Otherwise (either we have a location _or_ an error occurred),
-                // display the map. If _currentLocation is null (error case),
-                // it will default to _initialCenter.
-                if (!(measurementState.currentLocation == null &&
-                    measurementState.locationError == null))
+                if (measurementState.currentLocation != null ||
+                    measurementState.locationError != null)
                   FlutterMap(
                     options: MapOptions(
                       minZoom: 2,
@@ -56,8 +71,8 @@ class _LocationSelectorState extends State<LocationSelector> {
                           measurementState.initialCenter,
                       initialZoom: measurementState.currentZoom,
                       interactionOptions: const InteractionOptions(
-                          flags:
-                              InteractiveFlag.pinchZoom | InteractiveFlag.drag),
+                        flags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
+                      ),
                       onTap: (tapPos, tappedLatLng) {
                         setState(() {
                           measurementState.location = tappedLatLng;
@@ -65,12 +80,13 @@ class _LocationSelectorState extends State<LocationSelector> {
                       },
                     ),
                     children: [
-                      measurementState.testMode ? const SizedBox() : TileLayer(
-                        urlTemplate:
-                            'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                        subdomains: const ['a', 'b', 'c'],
-                        userAgentPackageName: 'com.example.yourapp',
-                      ),
+                      if (!measurementState.testMode)
+                        TileLayer(
+                          urlTemplate:
+                              'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                          tileProvider: _tileProvider,
+                          userAgentPackageName: 'com.example.app',
+                        ),
                       if (measurementState.location != null)
                         MarkerLayer(
                           markers: [
@@ -91,10 +107,7 @@ class _LocationSelectorState extends State<LocationSelector> {
               ],
             ),
           ),
-
           const SizedBox(height: 12),
-
-          // 2) Show the error message (if any) underneath the map panel:
           if (measurementState.locationError != null)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -108,8 +121,6 @@ class _LocationSelectorState extends State<LocationSelector> {
                 textAlign: TextAlign.center,
               ),
             ),
-
-          // 3) Always allow the user to see/choose the “Selected” coordinates below:
           const SizedBox(height: 12),
           if (measurementState.location != null)
             Padding(
@@ -130,7 +141,6 @@ class _LocationSelectorState extends State<LocationSelector> {
                 style: TextStyle(fontSize: 16, color: Colors.grey),
               ),
             ),
-
           const SizedBox(height: 16),
         ],
       ),
