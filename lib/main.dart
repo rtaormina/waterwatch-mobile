@@ -42,7 +42,7 @@ void main() async {
       ),
       home: HomeScreen(
         measurementState: MeasurementState.initializeState(getOnline, startMonitoring, storeMeasurement, uploadMeasurement),
-        getLocation: fetchDeviceLocation,
+        getLocation: getLocation,
       ),
     ),
   );

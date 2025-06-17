@@ -27,10 +27,13 @@ class _LocationSelectorState extends State<LocationSelector> {
   void initState() {
     super.initState();
 
-    _tileProvider = FMTCTileProvider(
-      stores: {'mapStore': BrowseStoreStrategy.readUpdateCreate},
-    );
-    widget.getLocation(widget.measurementState);
+    if(!widget.measurementState.testMode) {
+      _tileProvider = FMTCTileProvider(
+        stores: {'mapStore': BrowseStoreStrategy.readUpdateCreate},
+      );
+      widget.getLocation(widget.measurementState);
+    }
+    
   }
 
   @override
