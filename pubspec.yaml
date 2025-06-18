@@ -1,0 +1,46 @@
+name: waterwatch
+description: "A new Flutter project."
+
+# Prevent accidental publishing to pub.dev.
+publish_to: 'none'
+
+version: 1.0.0+2
+
+environment:
+  sdk: '>=3.3.4 <4.0.0'
+
+dependencies:
+  connectivity_plus: ^6.1.4
+  duration_picker: ^1.2.0
+  flutter:
+    sdk: flutter
+  flutter_launcher_icons: ^0.14.3
+  flutter_localizations:
+    sdk: flutter
+  flutter_map: ^8.1.1
+  flutter_map_tile_caching: ^10.1.1
+  geolocator: ^10.1.0
+  http: ^1.2.2
+  intl: 0.20.2
+  latlong2: ^0.9.1
+  shared_preferences: ^2.5.3
+  
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+  integration_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+
+  # Enable generation of localized Strings from arb files.
+  generate: true
+
+  fonts:
+    - family: Noto Sans
+      fonts:
+        - asset: assets/Noto_Sans/static/NotoSans-Black.ttf
