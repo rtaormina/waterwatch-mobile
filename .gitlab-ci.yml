@@ -4,7 +4,7 @@ workflow:
       when: always
 
 variables:
-  IMAGE_TAG: "v0.1"
+  IMAGE_TAG: v0.1
 
 stages:
   - build_test_env
