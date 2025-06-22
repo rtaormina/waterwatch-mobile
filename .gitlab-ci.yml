@@ -21,7 +21,7 @@ build_mobile_image:
     - changes:
         - pubspec.yaml
         - dockerfile
-        - gitlab-ci.yml
+        - .gitlab-ci.yml
   # Log in to Docker registry and build the image
   script:
     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
