@@ -45,9 +45,9 @@ class TemperatureObject extends MetricObject {
 
   bool temperatureValid() {
     if (tempUnitCelsius) {
-      temperatureError = temperature < 0 || temperature > 100;
+      temperatureError = temperature <= 0 || temperature >= 100;
     } else {
-      temperatureError = temperature < 32 || temperature > 212;
+      temperatureError = temperature <= 32 || temperature >= 212;
     }
     return !temperatureError;
   }
