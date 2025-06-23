@@ -121,7 +121,12 @@ class MeasurementState {
         ],
       },
       'temperature': {
-        'value': metricTemperatureObject.temperature,
+        'value': metricTemperatureObject.tempUnitCelsius
+            ? double.parse(
+                metricTemperatureObject.temperature.toStringAsFixed(1))
+            : double.parse(
+                ((metricTemperatureObject.temperature - 32) * (5 / 9))
+                    .toStringAsFixed(1)),
         'sensor': metricTemperatureObject.sensorType,
         'time_waited': formatDurationToMinSec(metricTemperatureObject.duration),
       },
